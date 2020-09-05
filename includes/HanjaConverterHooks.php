@@ -18,8 +18,9 @@ class HanjaConverterHooks {
                 $value = Dictionary::$dictionary[$key];
                 if($value) {
                     $result .= HanjaConverterHooks::format($key, $value);
-                    $i += iconv_strlen($key);
+                    $i += iconv_strlen($value);
                     $found = true;
+                    break;
                 }
             }
             if(!$found) {
