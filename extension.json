@@ -1,0 +1,14 @@
+{
+    "name": "HanjaConverter",
+    "author": "Lee0701",
+    "description": "Converts hanja words to hangul",
+    "version": "0.0.1",
+    "type": "hooks",
+    "AutoloadClasses": {
+        "HanjaConverterHooks": "includes/HanjaConverterHooks.php"
+    },
+    "Hooks": {
+        "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin"
+    },
+    "manifest_version": 1
+}
