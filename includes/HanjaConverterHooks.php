@@ -7,7 +7,8 @@ require_once('Dictionary.php');
 
 class HanjaConverterHooks {
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
-        if($target->isKnown()) return;
+        if(!($target instanceof Title)) return true;
+        if($target->isKnown()) return true;
         $label = HtmlArmor::getHtml($text);
         $len = iconv_strlen($label);
         $result = "";
