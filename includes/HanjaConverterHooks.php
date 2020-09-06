@@ -34,7 +34,7 @@ class HanjaConverterHooks {
                     $grade = min($grades);
 
                     $result .= Ruby::format($key, $value, "grade$grade$unknown");
-                    $i += iconv_strlen($value);
+                    $i += iconv_strlen($key);
                     $found = true;
                     break;
                 }
