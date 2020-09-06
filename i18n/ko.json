@@ -1,0 +1,18 @@
+{
+    "tog-HanjaConverter-displayRubyForUnknownLink": "존재하지 않는 링크에 대한 루비 표시",
+    "tog-HanjaConverter-displayRubyForGrade": "급수에 대한 루비 표시",
+    "tog-HanjaConverter-grade80": "8급",
+    "tog-HanjaConverter-grade72": "7급II",
+    "tog-HanjaConverter-grade70": "7급",
+    "tog-HanjaConverter-grade62": "6급II",
+    "tog-HanjaConverter-grade60": "6급",
+    "tog-HanjaConverter-grade52": "5급II",
+    "tog-HanjaConverter-grade50": "5급",
+    "tog-HanjaConverter-grade42": "4급II",
+    "tog-HanjaConverter-grade40": "4급",
+    "tog-HanjaConverter-grade32": "3급II",
+    "tog-HanjaConverter-grade30": "3급",
+    "tog-HanjaConverter-grade20": "2급",
+    "tog-HanjaConverter-grade10": "1급",
+    "tog-HanjaConverter-grade0": "표시 안 함"
+}

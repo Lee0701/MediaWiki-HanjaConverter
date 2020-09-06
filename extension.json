@@ -9,18 +9,32 @@
     },
     "Hooks": {
         "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin",
-        "BeforePageDisplay": "HanjaConverterHooks::onBeforePageDisplay"
+        "BeforePageDisplay": "HanjaConverterHooks::onBeforePageDisplay",
+        "GetPreferences": "HanjaConverterHooks::onGetPreferences"
     },
     "ResourceModules": {
-        "ext.HanjaConverter.ruby": {
+        "ext.HanjaConverter.ruby.hide": {
             "styles": [
-                "ext.HanjaConverter.ruby.css"
+                "ext.HanjaConverter.ruby.hide.css"
+            ]
+        },
+        "ext.HanjaConverter.ruby.show": {
+            "scripts": [
+                "ext.HanjaConverter.ruby.show.js"
             ]
         }
     },
     "ResourceFileModulePaths": {
         "localBasePath": "resources",
         "remoteExtPath": "HanjaConverter"
+    },
+    "MessagesDirs": {
+        "HanjaConverter": [
+            "i18n"
+        ]
+    },
+    "DefaultUserOptions": {
+        "displayRubyForUnknownLink": "1"
     },
     "manifest_version": 1
 }
