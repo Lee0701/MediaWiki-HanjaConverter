@@ -9,22 +9,16 @@ require_once('UserDictionary.php');
 require_once('HanjaGrades.php');
 
 class HanjaConverterHooks {
-    public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
-        if(!($target instanceof Title)) return true;
-        if(!($text instanceof HtmlArmor)) return true;
-        $unknown = '';
-        if(!$target->isKnown()) $unknown = ' unknown';
-
+    public static function convert($hanja) {
         $userDictionary = UserDictionary::get();
 
-        $label = HtmlArmor::getHtml($text);
-        $len = iconv_strlen($label);
-        $result = "";
+        $len = iconv_strlen($hanja);
+        $result = array();
 
         for($i = 0 ; $i < $len ; ) {
             $found = false;
             for($j = $len - $i ; $j > 0 ; $j--) {
-                $key = iconv_substr($label, $i, $j);
+                $key = iconv_substr($hanja, $i, $j);
                 $value = $userDictionary[$key];
                 if(!$value) $value = Dictionary::$dictionary[$key];
                 if($value) {
@@ -33,15 +27,36 @@ class HanjaConverterHooks {
                         array_push($grades, HanjaGrades::gradeOf(iconv_substr($key, $k, 1)));
                     $grade = min($grades);
 
-                    $result .= Ruby::format($key, $value, "grade$grade$unknown");
+                    array_push($result, array($key, $value, $grade));
                     $i += iconv_strlen($key);
                     $found = true;
                     break;
                 }
             }
             if(!$found) {
-                $result .= iconv_substr($label, $i, 1);
+                array_push($result, iconv_substr($hanja, $i, 1));
                 $i++;
+            }
+        }
+        return $result;
+    }
+
+    public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
+        if(!($target instanceof Title)) return true;
+        if(!($text instanceof HtmlArmor)) return true;
+        $unknown = '';
+        if(!$target->isKnown()) $unknown = ' unknown';
+
+        $label = HtmlArmor::getHtml($text);
+        $result = "";
+        foreach(self::convert($label) as $item) {
+            if(is_array($item)) {
+                $key = $item[0];
+                $value = $item[1];
+                $grade = $item[2];
+                $result .= Ruby::format($key, $value, "grade$grade$unknown");
+            } else {
+                $result .= $item;
             }
         }
         $text = new HtmlArmor($result);
