@@ -8,7 +8,19 @@
         "HanjaConverterHooks": "includes/HanjaConverterHooks.php"
     },
     "Hooks": {
-        "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin"
+        "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin",
+        "BeforePageDisplay": "HanjaConverterHooks::onBeforePageDisplay"
+    },
+    "ResourceModules": {
+        "ext.HanjaConverter.ruby": {
+            "styles": [
+                "ext.HanjaConverter.ruby.css"
+            ]
+        }
+    },
+    "ResourceFileModulePaths": {
+        "localBasePath": "resources",
+        "remoteExtPath": "HanjaConverter"
     },
     "manifest_version": 1
 }

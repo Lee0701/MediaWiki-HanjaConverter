@@ -3,6 +3,7 @@
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Linker\LinkTarget;
 
+require_once('Ruby.php');
 require_once('Dictionary.php');
 require_once('UserDictionary.php');
 require_once('HanjaGrades.php');
@@ -31,7 +32,7 @@ class HanjaConverterHooks {
                         array_push($grades, HanjaGrades::gradeOf(iconv_substr($key, $k, 1)));
                     $grade = min($grades);
 
-                    $result .= self::format($key, $value, "grade$grade");
+                    $result .= Ruby::format($key, $value, "grade$grade");
                     $i += iconv_strlen($value);
                     $found = true;
                     break;
@@ -45,9 +46,8 @@ class HanjaConverterHooks {
         $text = new HtmlArmor($result);
     }
     
-    public static function format($hanja, $reading, $class) {
-        if($class) return "<ruby class=\"hanja $class\"><rb>$hanja</rb><rt>$reading</rt><rp>($reading)</rp></ruby>";
-        else return "<ruby><rb>$hanja</rb><rt>$reading</rt><rp>($reading)</rp></ruby>";
+    public static function onBeforePageDisplay(OutputPage $outputPage, Skin $skin) {
+        $outputPage->addModuleStyles('ext.HanjaConverter.ruby');
     }
 }
 
