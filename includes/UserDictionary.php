@@ -4,7 +4,7 @@ class UserDictionary {
     private static $userDictionarySource = null;
     private static $userDictionary = null;
 
-    public static function getUserDictionary() {
+    public static function get() {
         $newUserDictionarySource = self::readUserDictionary();
         if($newUserDictionarySource !== self::$userDictionarySource) {
             self::$userDictionary = self::parseUserDictionary($newUserDictionarySource);
