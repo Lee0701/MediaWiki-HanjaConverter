@@ -64,11 +64,6 @@ class HanjaConverterHooks {
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
-        $preferences['displayRubyForUnknownLink'] = [
-            'type' => 'toggle',
-            'label-message' => 'tog-HanjaConverter-displayRubyForUnknownLink',
-            'section' => 'rendering',
-        ];
         $options = array();
         foreach(HanjaGrades::$grades as $grade) {
             $options[wfMessage("tog-HanjaConverter-grade$grade")->parse()] = "grade$grade";
@@ -78,6 +73,11 @@ class HanjaConverterHooks {
             'label-message' => 'tog-HanjaConverter-displayRubyForGrade',
             'options' => $options,
             'default' => $user->getOption('displayRubyForGrade', 'grade0'),
+            'section' => 'rendering',
+        ];
+        $preferences['displayRubyForUnknownLink'] = [
+            'type' => 'toggle',
+            'label-message' => 'tog-HanjaConverter-displayRubyForUnknownLink',
             'section' => 'rendering',
         ];
     }

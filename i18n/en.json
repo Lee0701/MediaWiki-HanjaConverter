@@ -1,6 +1,6 @@
 {
-    "tog-HanjaConverter-displayRubyForUnknownLink": "Display ruby on non-existent links",
-    "tog-HanjaConverter-displayRubyForGrade": "Display ruby for grade",
+    "tog-HanjaConverter-displayRubyForUnknownLink": "Always display ruby for unknown links",
+    "tog-HanjaConverter-displayRubyForGrade": "Minimal grade for ruby display",
     "tog-HanjaConverter-grade80": "Grade 8",
     "tog-HanjaConverter-grade72": "Grade 7-II",
     "tog-HanjaConverter-grade70": "Grade 7",

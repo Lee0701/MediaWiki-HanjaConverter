@@ -1,6 +1,6 @@
 {
-    "tog-HanjaConverter-displayRubyForUnknownLink": "존재하지 않는 링크에 대한 루비 표시",
-    "tog-HanjaConverter-displayRubyForGrade": "급수에 대한 루비 표시",
+    "tog-HanjaConverter-displayRubyForUnknownLink": "존재하지 않는 링크에 대한 독음은 항상 표시",
+    "tog-HanjaConverter-displayRubyForGrade": "독음을 표시할 최소 급수",
     "tog-HanjaConverter-grade80": "8급",
     "tog-HanjaConverter-grade72": "7급II",
     "tog-HanjaConverter-grade70": "7급",
