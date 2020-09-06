@@ -49,7 +49,18 @@ class HanjaConverterHooks {
     
     public static function onBeforePageDisplay(OutputPage $outputPage, Skin $skin) {
         $outputPage->addModuleStyles('ext.HanjaConverter.ruby.hide');
-        $outputPage->addModules('ext.HanjaConverter.ruby.show');
+        global $wgUser;
+        $unknownLink = $wgUser->getOption('displayRubyForUnknownLink');
+        $grade = $wgUser->getOption('displayRubyForGrade');
+        $style = "";
+        if($unknownLink === '1') {
+            $style .= "ruby.hanja.unknown > rt, ruby.hanja.unknown > rp { display: revert; }\n";
+        }
+        if($grade) foreach(HanjaGrades::$grades as $g) {
+            if("grade$g" == $grade) break;
+            $style .= "ruby.hanja.grade$g > rt, ruby.hanja.grade$g > rp { display: revert; }\n";
+        }
+        $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
@@ -58,9 +69,8 @@ class HanjaConverterHooks {
             'label-message' => 'tog-HanjaConverter-displayRubyForUnknownLink',
             'section' => 'rendering',
         ];
-        $grades = array(0, 10, 20, 30, 32, 40, 42, 50, 52, 60, 62, 70, 72, 80);
         $options = array();
-        foreach($grades as $grade) {
+        foreach(HanjaGrades::$grades as $grade) {
             $options[wfMessage("tog-HanjaConverter-grade$grade")->parse()] = "grade$grade";
         }
         $preferences['displayRubyForGrade'] = [
