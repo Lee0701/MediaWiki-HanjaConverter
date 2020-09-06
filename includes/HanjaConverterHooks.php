@@ -96,6 +96,17 @@ class HanjaConverterHooks {
             'section' => 'rendering',
         ];
     }
+    
+    public static function onGetDefaultSortkey($title, &$sortkey) {
+        $result = "";
+        foreach(self::convert($title) as $item) {
+            if(is_array($item)) $item = $item[1];
+            if(iconv_strpos($item, "/") !== false) $item = explode("/", $item)[0];
+            $result .= $item;
+        }
+        $sortkey = $result;
+        return ;
+    }
 }
 
 ?>

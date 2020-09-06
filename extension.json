@@ -10,7 +10,8 @@
     "Hooks": {
         "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin",
         "BeforePageDisplay": "HanjaConverterHooks::onBeforePageDisplay",
-        "GetPreferences": "HanjaConverterHooks::onGetPreferences"
+        "GetPreferences": "HanjaConverterHooks::onGetPreferences",
+        "GetDefaultSortkey": "HanjaConverterHooks::onGetDefaultSortkey"
     },
     "ResourceModules": {
         "ext.HanjaConverter.ruby.hide": {
