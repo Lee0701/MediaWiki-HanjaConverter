@@ -17,8 +17,6 @@ class HanjaConverterHooks {
         $len = iconv_strlen($label);
         $result = "";
 
-        if($target->getText() !== $label) return true;
-        
         $newUserDictionarySource = HanjaConverterHooks::readUserDictionary();
         if($newUserDictionarySource !== HanjaConverterHooks::$userDictionarySource) {
             HanjaConverterHooks::$userDictionary = HanjaConverterHooks::parseUserDictionary($newUserDictionarySource);
