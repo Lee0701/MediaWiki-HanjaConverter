@@ -4,44 +4,10 @@ use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Linker\LinkTarget;
 
 require_once('Ruby.php');
-require_once('Dictionary.php');
-require_once('UserDictionary.php');
 require_once('HanjaGrades.php');
+require_once('HanjaConverter.php');
 
 class HanjaConverterHooks {
-    public static function convert($hanja) {
-        $userDictionary = UserDictionary::get();
-
-        $len = iconv_strlen($hanja);
-        $result = array();
-
-        for($i = 0 ; $i < $len ; ) {
-            $found = false;
-            for($j = $len - $i ; $j > 0 ; $j--) {
-                $key = iconv_substr($hanja, $i, $j);
-                $value = null;
-                if(isset($userDictionary[$key])) $value = $userDictionary[$key];
-                else if(isset(Dictionary::$dictionary[$key])) $value = Dictionary::$dictionary[$key];
-                if($value) {
-                    $grades = array();
-                    for($k = 0 ; $k < iconv_strlen($key) ; $k++)
-                        array_push($grades, HanjaGrades::gradeOf(iconv_substr($key, $k, 1)));
-                    $grade = min($grades);
-
-                    array_push($result, array($key, $value, $grade));
-                    $i += iconv_strlen($key);
-                    $found = true;
-                    break;
-                }
-            }
-            if(!$found) {
-                array_push($result, iconv_substr($hanja, $i, 1));
-                $i++;
-            }
-        }
-        return $result;
-    }
-
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
@@ -50,7 +16,7 @@ class HanjaConverterHooks {
 
         $label = HtmlArmor::getHtml($text);
         $result = "";
-        foreach(self::convert($label) as $item) {
+        foreach(HanjaConverter::convert($label) as $item) {
             if(is_array($item)) {
                 $key = $item[0];
                 $value = $item[1];
@@ -100,7 +66,7 @@ class HanjaConverterHooks {
     
     public static function onGetDefaultSortkey($title, &$sortkey) {
         $result = "";
-        foreach(self::convert($title) as $item) {
+        foreach(HanjaConverter::convert($title) as $item) {
             if(is_array($item)) $item = $item[1];
             if(iconv_strpos($item, "/") !== false) $item = explode("/", $item)[0];
             $result .= $item;
