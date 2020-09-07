@@ -19,8 +19,9 @@ class HanjaConverterHooks {
             $found = false;
             for($j = $len - $i ; $j > 0 ; $j--) {
                 $key = iconv_substr($hanja, $i, $j);
-                $value = $userDictionary[$key];
-                if(!$value) $value = Dictionary::$dictionary[$key];
+                $value = null;
+                if(isset($userDictionary[$key])) $value = $userDictionary[$key];
+                else if(isset(Dictionary::$dictionary[$key])) $value = Dictionary::$dictionary[$key];
                 if($value) {
                     $grades = array();
                     for($k = 0 ; $k < iconv_strlen($key) ; $k++)
