@@ -72,8 +72,8 @@ class HanjaConverterHooks {
             $style .= "ruby.hanja.unknown > rt, ruby.hanja.unknown > rp { display: revert; }\n";
         }
         if($grade) foreach(HanjaGrades::$grades as $g) {
-            if("grade$g" == $grade) break;
             $style .= "ruby.hanja.grade$g > rt, ruby.hanja.grade$g > rp { display: revert; }\n";
+            if("grade$g" == $grade) break;
         }
         $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
     }
