@@ -35,7 +35,7 @@ class HanjaGrades {
             80 => self::$LIST_80
         );
         foreach($grades as $grade => $list) {
-            if(iconv_strpos($list, $c) !== false) return $grade;
+            if(strpos($list, $c) !== false) return $grade;
         }
         return 0;
     }
