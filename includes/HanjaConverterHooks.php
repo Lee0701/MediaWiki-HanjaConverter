@@ -51,7 +51,7 @@ class HanjaConverterHooks {
             $options[wfMessage("tog-HanjaConverter-grade$grade")->parse()] = "grade$grade";
         }
         $preferences['displayRubyForGrade'] = [
-            'type' => 'radio',
+            'type' => 'select',
             'label-message' => 'tog-HanjaConverter-displayRubyForGrade',
             'options' => $options,
             'default' => $user->getOption('displayRubyForGrade', 'grade0'),
