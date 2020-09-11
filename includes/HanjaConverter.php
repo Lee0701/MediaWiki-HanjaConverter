@@ -20,7 +20,9 @@ class HanjaConverter {
                 if($value) {
                     $grades = array();
                     for($k = 0 ; $k < iconv_strlen($key) ; $k++)
-                        array_push($grades, HanjaGrades::gradeOf(iconv_substr($key, $k, 1)));
+                        $c = iconv_substr($key, $k, 1);
+                        if($c >= "가" and $c <= "힣") continue;
+                        array_push($grades, HanjaGrades::gradeOf($c));
                     $grade = min($grades);
 
                     array_push($result, array($key, $value, $grade));
