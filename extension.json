@@ -30,7 +30,8 @@
         ]
     },
     "DefaultUserOptions": {
-        "displayRubyForUnknownLink": "1"
+        "displayRubyForUnknownLink": "1",
+        "displayRubyForGrade": "grade80"
     },
     "manifest_version": 1
 }
