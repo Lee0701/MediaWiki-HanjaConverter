@@ -19,10 +19,11 @@ class HanjaConverter {
                 else if(isset(Dictionary::$dictionary[$key])) $value = Dictionary::$dictionary[$key];
                 if($value) {
                     $grades = array();
-                    for($k = 0 ; $k < iconv_strlen($key) ; $k++)
+                    for($k = 0 ; $k < iconv_strlen($key) ; $k++) {
                         $c = iconv_substr($key, $k, 1);
                         if($c >= "가" and $c <= "힣") continue;
                         array_push($grades, HanjaGrades::gradeOf($c));
+                    }
                     $grade = min($grades);
 
                     array_push($result, array($key, $value, $grade));
