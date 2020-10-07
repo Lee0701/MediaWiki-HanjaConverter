@@ -14,5 +14,6 @@
     "tog-HanjaConverter-grade30": "3級",
     "tog-HanjaConverter-grade20": "2級",
     "tog-HanjaConverter-grade10": "1級",
-    "tog-HanjaConverter-grade0": "非表示"
+    "tog-HanjaConverter-grade0": "特級",
+    "tog-HanjaConverter-none": "非表示"
 }

@@ -38,7 +38,7 @@ class HanjaConverterHooks {
         if($unknownLink === '1') {
             $style .= "ruby.hanja.unknown > rt, ruby.hanja.unknown > rp { display: revert; }\n";
         }
-        if($grade) foreach(HanjaGrades::$grades as $g) {
+        if($grade and $grade != 'none') foreach(HanjaGrades::$grades as $g) {
             $style .= "ruby.hanja.grade$g > rt, ruby.hanja.grade$g > rp { display: revert; }\n";
             if("grade$g" == $grade) break;
         }
@@ -47,6 +47,7 @@ class HanjaConverterHooks {
 
     public static function onGetPreferences(User $user, array &$preferences) {
         $options = array();
+        $options[wfMessage("tog-HanjaConverter-none")->parse()] = "none";
         foreach(HanjaGrades::$grades as $grade) {
             $options[wfMessage("tog-HanjaConverter-grade$grade")->parse()] = "grade$grade";
         }
@@ -54,7 +55,7 @@ class HanjaConverterHooks {
             'type' => 'select',
             'label-message' => 'tog-HanjaConverter-displayRubyForGrade',
             'options' => $options,
-            'default' => $user->getOption('displayRubyForGrade', 'grade0'),
+            'default' => $user->getOption('displayRubyForGrade', 'grade80'),
             'section' => 'rendering',
         ];
         $preferences['displayRubyForUnknownLink'] = [

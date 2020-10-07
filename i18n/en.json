@@ -14,5 +14,6 @@
     "tog-HanjaConverter-grade30": "Grade 3",
     "tog-HanjaConverter-grade20": "Grade 2",
     "tog-HanjaConverter-grade10": "Grade 1",
-    "tog-HanjaConverter-grade0": "None"
+    "tog-HanjaConverter-grade0": "Special",
+    "tog-HanjaConverter-none": "None"
 }
