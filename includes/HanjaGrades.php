@@ -1,6 +1,22 @@
 <?php
 
 class HanjaGrades {
+
+    private static $ADDITIONAL_LIST_80 = '';
+    private static $ADDITIONAL_LIST_72 = '';
+    private static $ADDITIONAL_LIST_70 = '';
+    private static $ADDITIONAL_LIST_62 = '';
+    private static $ADDITIONAL_LIST_60 = '强畵';
+    private static $ADDITIONAL_LIST_52 = '';
+    private static $ADDITIONAL_LIST_50 = '';
+    private static $ADDITIONAL_LIST_42 = '絕豐';
+    private static $ADDITIONAL_LIST_40 = '秘嘆姊';
+    private static $ADDITIONAL_LIST_32 = '凉峰岩兎戱';
+    private static $ADDITIONAL_LIST_30 = '隸';
+    private static $ADDITIONAL_LIST_20 = '碍姙覇晉';
+    private static $ADDITIONAL_LIST_12 = '';
+    private static $ADDITIONAL_LIST_10 = '廐麵讐昻痒湧寃猪簒痴撑幫枾柹';
+
     private static $LIST_80 = '校敎九國軍金南女年大東六萬母木門民白父北四山三生西先小水室十五王外月二人一日長弟中靑寸七土八學韓兄火';
     private static $LIST_72 = '家間江車工空氣記男內農答道動力立每名物方不事上姓世手時市食安午右子自場電前全正足左直平下漢海話活孝後';
     private static $LIST_70 = '歌口旗同洞冬登來老里林面命文問百夫算色夕少所數植心語然有育邑入字祖住主重紙地千天川草村秋春出便夏花休';
@@ -20,19 +36,19 @@ class HanjaGrades {
     
     public static function gradeOf($c) {
         $grades = array(
-            10 => self::$LIST_10,
-            20 => self::$LIST_20 . self::$LIST_12,
-            30 => self::$LIST_30,
-            32 => self::$LIST_32,
-            40 => self::$LIST_40,
-            42 => self::$LIST_42,
-            50 => self::$LIST_50,
-            52 => self::$LIST_52,
-            60 => self::$LIST_60,
-            62 => self::$LIST_62,
-            70 => self::$LIST_70,
-            72 => self::$LIST_72,
-            80 => self::$LIST_80
+            10 => self::$LIST_10 . self::$ADDITIONAL_LIST_10,
+            20 => self::$LIST_20 . self::$LIST_12 . self::$ADDITIONAL_LIST_20 . self::$ADDITIONAL_LIST_12,
+            30 => self::$LIST_30 . self::$ADDITIONAL_LIST_30,
+            32 => self::$LIST_32 . self::$ADDITIONAL_LIST_32,
+            40 => self::$LIST_40 . self::$ADDITIONAL_LIST_40,
+            42 => self::$LIST_42 . self::$ADDITIONAL_LIST_42,
+            50 => self::$LIST_50 . self::$ADDITIONAL_LIST_50,
+            52 => self::$LIST_52 . self::$ADDITIONAL_LIST_52,
+            60 => self::$LIST_60 . self::$ADDITIONAL_LIST_60,
+            62 => self::$LIST_62 . self::$ADDITIONAL_LIST_62,
+            70 => self::$LIST_70 . self::$ADDITIONAL_LIST_70,
+            72 => self::$LIST_72 . self::$ADDITIONAL_LIST_72,
+            80 => self::$LIST_80 . self::$ADDITIONAL_LIST_80
         );
         foreach($grades as $grade => $list) {
             if(strpos($list, $c) !== false) return $grade;
@@ -41,19 +57,19 @@ class HanjaGrades {
     }
 
     public static function get($grade) {
-        $grade80 = self::$LIST_80;
-        $grade72 = $grade80 . self::$LIST_72;
-        $grade70 = $grade72 . self::$LIST_70;
-        $grade62 = $grade70 . self::$LIST_62;
-        $grade60 = $grade62 . self::$LIST_60;
-        $grade52 = $grade60 . self::$LIST_52;
-        $grade50 = $grade52 . self::$LIST_50;
-        $grade42 = $grade50 . self::$LIST_42;
-        $grade40 = $grade42 . self::$LIST_40;
-        $grade32 = $grade40 . self::$LIST_32;
-        $grade30 = $grade32 . self::$LIST_30;
-        $grade20 = $grade30 . self::$LIST_20 . self::$LIST_12;
-        $grade10 = $grade20 . self::$LIST_10;
+        $grade80 = self::$LIST_80 . self::$ADDITIONAL_LIST_80;
+        $grade72 = $grade80 . self::$LIST_72 . self::$ADDITIONAL_LIST_72;
+        $grade70 = $grade72 . self::$LIST_70 . self::$ADDITIONAL_LIST_70;
+        $grade62 = $grade70 . self::$LIST_62 . self::$ADDITIONAL_LIST_62;
+        $grade60 = $grade62 . self::$LIST_60 . self::$ADDITIONAL_LIST_60;
+        $grade52 = $grade60 . self::$LIST_52 . self::$ADDITIONAL_LIST_52;
+        $grade50 = $grade52 . self::$LIST_50 . self::$ADDITIONAL_LIST_50;
+        $grade42 = $grade50 . self::$LIST_42 . self::$ADDITIONAL_LIST_42;
+        $grade40 = $grade42 . self::$LIST_40 . self::$ADDITIONAL_LIST_40;
+        $grade32 = $grade40 . self::$LIST_32 . self::$ADDITIONAL_LIST_32;
+        $grade30 = $grade32 . self::$LIST_30 . self::$ADDITIONAL_LIST_30;
+        $grade20 = $grade30 . self::$LIST_20 . self::$LIST_12 . self::$ADDITIONAL_LIST_20 . self::$ADDITIONAL_LIST_12;
+        $grade10 = $grade20 . self::$LIST_10 . self::$ADDITIONAL_LIST_10;
 
         $grades = array(
             "grade10" => $grade10,
@@ -71,7 +87,7 @@ class HanjaGrades {
             "grade80" => $grade80
         );
         
-        return grades[$grade];
+        return $grades[$grade];
     }
 
 }
