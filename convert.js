@@ -15,6 +15,16 @@ rl.on('close', () => {
     })
 
     const sortReadings = (hanja, readings) => readings.sort((a, b) => hanjaReadings[hanja] == a ? -1 : 1)
+    
+    Object.keys(dict).forEach((key) => {
+        const values = dict[key]
+        values.forEach((value, i) => {
+            const decomposed = value.normalize('NFD')
+            if(decomposed.charAt(decomposed.length - 1) != 'ᆺ') return
+            const word = decomposed.slice(0, decomposed.length - 1).normalize('NFC')
+            if(values.includes(word)) values.splice(i, 1)
+        })
+    })
 
     const result = Object.entries(dict)
             .map(([hanja, readings]) => [hanja, sortReadings(hanja, readings).join('/')])
