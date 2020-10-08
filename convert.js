@@ -24,6 +24,19 @@ rl.on('close', () => {
             const word = decomposed.slice(0, decomposed.length - 1).normalize('NFC')
             if(values.includes(word)) values.splice(i, 1)
         })
+        if(key.length > 1) values.forEach((value, i) => {
+            let decomposed = value.normalize('NFD')
+            if(decomposed.charAt(0) == 'ᄅ') {
+                decomposed = 'ᄂ' + decomposed.slice(1)
+                const word = decomposed.normalize('NFC')
+                if(values.includes(word)) values.splice(i, 1)
+            }
+            if(decomposed.charAt(0) == 'ᄂ') {
+                decomposed = 'ᄋ' + decomposed.slice(1)
+                const word = decomposed.normalize('NFC')
+                if(values.includes(word)) values.splice(i, 1)
+            }
+        })
     })
 
     const result = Object.entries(dict)
