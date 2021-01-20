@@ -1,3 +1,8 @@
+
+:not(.mw-parser-output ruby.hanja) > rt, :not(.mw-parser-output ruby.hanja) > rp {
+    display: none !important;
+}
+
 ruby.hanja > rt, ruby.hanja > rp {
     display: none;
 }

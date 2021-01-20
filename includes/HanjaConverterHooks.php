@@ -21,27 +21,27 @@ class HanjaConverterHooks {
             $c = $chars[$i];
             $bracket_last = iconv_substr($bracket, -1, 1);
             if($c == ']') {
-                if($bracket_last == ']') $bracket = iconv_substr($bracket, 0, -1);
+                if($bracket_last == '[') $bracket = iconv_substr($bracket, 0, -1);
             } else if($c == '[') {
                 $bracket .= $c;
             } else if(iconv_strlen($bracket) < 2 && !iconv_strpos("$bracket", '[[')) {
                 if($c == '\n' || $c == ' ') {
-                    $converted = self::convertWord($word);
-                    $result_text .= $converted . $c;
+                    $result_text .= self::convertWord($word);
+                    $result_text .= $c;
                     $word = '';
                 } else if(preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) > 10) {
-                    $converted = self::convertWord($word);
-                    $result_text .= $converted;
+                    $result_text .= self::convertWord($word);
                     $word = $c;
                 } else {
                     $word .= $c;
                 }
                 continue;
             }
+            $result_text .= self::convertWord($word);
+            $word = '';
             $result_text .= $c;
         }
-        $converted = self::convertWord($word);
-        $result_text .= $converted;
+        $result_text .= self::convertWord($word);
         $text = $result_text;
     }
 
