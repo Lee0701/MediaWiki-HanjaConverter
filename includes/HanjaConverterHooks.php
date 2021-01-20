@@ -8,6 +8,43 @@ require_once('HanjaGrades.php');
 require_once('HanjaConverter.php');
 
 class HanjaConverterHooks {
+
+    public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
+        if($parser->getTitle()->getNamespace() < 0) return;
+        $hanja_range = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
+        $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
+        $result_text = '';
+        $len = count($chars);
+        $bracket = '';
+        $word = '';
+        for( $i = 0 ; $i < $len ; $i++ ) {
+            $c = $chars[$i];
+            $bracket_last = iconv_substr($bracket, -1, 1);
+            if($c == ']') {
+                if($bracket_last == ']') $bracket = iconv_substr($bracket, 0, -1);
+            } else if($c == '[') {
+                $bracket .= $c;
+            } else if(iconv_strlen($bracket) < 2 && !iconv_strpos("$bracket", '[[')) {
+                if($c == '\n' || $c == ' ') {
+                    $converted = self::convertWord($word);
+                    $result_text .= $converted . $c;
+                    $word = '';
+                } else if(preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) > 10) {
+                    $converted = self::convertWord($word);
+                    $result_text .= $converted;
+                    $word = $c;
+                } else {
+                    $word .= $c;
+                }
+                continue;
+            }
+            $result_text .= $c;
+        }
+        $converted = self::convertWord($word);
+        $result_text .= $converted;
+        $text = $result_text;
+    }
+
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
@@ -15,17 +52,7 @@ class HanjaConverterHooks {
         if(!$target->isKnown()) $unknown = ' unknown';
 
         $label = HtmlArmor::getHtml($text);
-        $result = "";
-        foreach(HanjaConverter::convert($label) as $item) {
-            if(is_array($item)) {
-                $key = $item[0];
-                $value = $item[1];
-                $grade = $item[2];
-                $result .= Ruby::format($key, $value, "grade$grade$unknown");
-            } else {
-                $result .= $item;
-            }
-        }
+        $result = self::convertWord($label, $unknown);
         $text = new HtmlArmor($result);
     }
     
@@ -75,6 +102,22 @@ class HanjaConverterHooks {
         $sortkey = $result;
         return ;
     }
+
+    private static function convertWord($word, $unknown='') {
+        $result = "";
+        foreach(HanjaConverter::convert($word) as $item) {
+            if(is_array($item)) {
+                $key = $item[0];
+                $value = $item[1];
+                $grade = $item[2];
+                $result .= Ruby::format($key, $value, "grade$grade$unknown");
+            } else {
+                $result .= $item;
+            }
+        }
+        return $result;
+    }
+
 }
 
 ?>
