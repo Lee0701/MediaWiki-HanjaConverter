@@ -7,20 +7,21 @@ class HanjaConverter {
     public static function convert($hanja) {
         $userDictionary = UserDictionary::get();
 
-        $len = iconv_strlen($hanja);
+        $chars = preg_split('//u', $hanja, -1, PREG_SPLIT_NO_EMPTY);
+        $len = count($chars);
         $result = array();
 
         for($i = 0 ; $i < $len ; ) {
             $found = false;
             for($j = $len - $i ; $j > 0 ; $j--) {
-                $key = iconv_substr($hanja, $i, $j);
+                $key = implode('', array_slice($chars, $i, $j));
                 $value = null;
                 $grade = null;
                 if(isset($userDictionary[$key])) {
                     $value = $userDictionary[$key];
                     $grades = array();
                     for($k = 0 ; $k < $j ; $k++) {
-                        $c = iconv_substr($key, $k, 1);
+                        $c = $chars[$i + $k];
                         if($c >= "가" and $c <= "힣") continue;
                         array_push($grades, HanjaGrades::gradeOf($c));
                     }
@@ -39,7 +40,7 @@ class HanjaConverter {
                 }
             }
             if(!$found) {
-                array_push($result, iconv_substr($hanja, $i, 1));
+                array_push($result, $chars[$i]);
                 $i++;
             }
         }
