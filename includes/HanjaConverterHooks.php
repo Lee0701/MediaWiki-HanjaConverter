@@ -61,12 +61,13 @@ class HanjaConverterHooks {
         global $wgUser;
         $unknownLink = $wgUser->getOption('displayRubyForUnknownLink');
         $grade = $wgUser->getOption('displayRubyForGrade');
+        $display = $wgUser->getOption('rubyDisplayType');
         $style = "";
         if($unknownLink === '1') {
-            $style .= "ruby.hanja.unknown > rt, ruby.hanja.unknown > rp { display: revert; }\n";
+            $style .= "ruby.hanja.unknown > rt { display: $display; } ruby.hanja.unknown > rp { display: revert; }\n";
         }
         if($grade and $grade != 'none') foreach(HanjaGrades::$grades as $g) {
-            $style .= "ruby.hanja.grade$g > rt, ruby.hanja.grade$g > rp { display: revert; }\n";
+            $style .= "ruby.hanja.grade$g > rt { display: $display; } ruby.hanja.grade$g > rp { display: revert; }\n";
             if("grade$g" == $grade) break;
         }
         $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
@@ -88,6 +89,15 @@ class HanjaConverterHooks {
         $preferences['displayRubyForUnknownLink'] = [
             'type' => 'toggle',
             'label-message' => 'tog-HanjaConverter-displayRubyForUnknownLink',
+            'section' => 'rendering',
+        ];
+        $preferences['rubyDisplayType'] = [
+            'type' => 'select',
+            'options' => array(
+                wfMessage("tog-HanjaConverter-side")->parse() => 'inline-block',
+                wfMessage("tog-HanjaConverter-top")->parse() => 'ruby-text'
+            ),
+            'label-message' => 'tog-HanjaConverter-rubyDisplayType',
             'section' => 'rendering',
         ];
     }

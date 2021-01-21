@@ -1,6 +1,7 @@
 {
     "tog-HanjaConverter-displayRubyForUnknownLink": "Always display ruby for unknown links",
     "tog-HanjaConverter-displayRubyForGrade": "Minimal grade for ruby display",
+    "tog-HanjaConverter-rubyDisplayType": "Ruby display type",
     "tog-HanjaConverter-grade80": "Grade 8",
     "tog-HanjaConverter-grade72": "Grade 7-II",
     "tog-HanjaConverter-grade70": "Grade 7",
@@ -15,5 +16,7 @@
     "tog-HanjaConverter-grade20": "Grade 2",
     "tog-HanjaConverter-grade10": "Grade 1",
     "tog-HanjaConverter-grade0": "Special",
-    "tog-HanjaConverter-none": "None"
+    "tog-HanjaConverter-none": "None",
+    "tog-HanjaConverter-side": "Side",
+    "tog-HanjaConverter-top": "Top"
 }

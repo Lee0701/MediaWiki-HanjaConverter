@@ -1,6 +1,7 @@
 {
     "tog-HanjaConverter-displayRubyForUnknownLink": "存在하지 않는 링크에 對한 讀音은 恒常 表示",
     "tog-HanjaConverter-displayRubyForGrade": "讀音을 表示할 最少 級數",
+    "tog-HanjaConverter-rubyDisplayType": "讀音 表示 位置",
     "tog-HanjaConverter-grade80": "8級",
     "tog-HanjaConverter-grade72": "7級II",
     "tog-HanjaConverter-grade70": "7級",
@@ -15,5 +16,7 @@
     "tog-HanjaConverter-grade20": "2級",
     "tog-HanjaConverter-grade10": "1級",
     "tog-HanjaConverter-grade0": "特級",
-    "tog-HanjaConverter-none": "非表示"
+    "tog-HanjaConverter-none": "非表示",
+    "tog-HanjaConverter-side": "側面",
+    "tog-HanjaConverter-top": "上端"
 }

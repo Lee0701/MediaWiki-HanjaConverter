@@ -32,7 +32,8 @@
     },
     "DefaultUserOptions": {
         "displayRubyForUnknownLink": "1",
-        "displayRubyForGrade": "grade80"
+        "displayRubyForGrade": "grade80",
+        "rubyDisplayType": "inline-block"
     },
     "manifest_version": 1
 }
