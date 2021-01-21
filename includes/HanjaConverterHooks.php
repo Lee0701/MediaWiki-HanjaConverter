@@ -78,6 +78,15 @@ class HanjaConverterHooks {
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
+        $preferences['rubyDisplayType'] = [
+            'type' => 'select',
+            'options' => array(
+                wfMessage("tog-HanjaConverter-side")->parse() => 'inline-block',
+                wfMessage("tog-HanjaConverter-top")->parse() => 'ruby-text'
+            ),
+            'label-message' => 'tog-HanjaConverter-rubyDisplayType',
+            'section' => 'rendering',
+        ];
         $options = array();
         $options[wfMessage("tog-HanjaConverter-none")->parse()] = "none";
         foreach(HanjaGrades::$grades as $grade) {
@@ -93,15 +102,6 @@ class HanjaConverterHooks {
         $preferences['displayRubyForUnknownLink'] = [
             'type' => 'toggle',
             'label-message' => 'tog-HanjaConverter-displayRubyForUnknownLink',
-            'section' => 'rendering',
-        ];
-        $preferences['rubyDisplayType'] = [
-            'type' => 'select',
-            'options' => array(
-                wfMessage("tog-HanjaConverter-side")->parse() => 'inline-block',
-                wfMessage("tog-HanjaConverter-top")->parse() => 'ruby-text'
-            ),
-            'label-message' => 'tog-HanjaConverter-rubyDisplayType',
             'section' => 'rendering',
         ];
     }
