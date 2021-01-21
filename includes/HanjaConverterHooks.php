@@ -29,16 +29,17 @@ class HanjaConverterHooks {
                         $text .= $c;
                     } else {
                         $text .= self::convertWord($word);
-                        $text .= $c;
-                        $word = '';
+                        $word = $c;
                     }
                 } else {
                     $word .= $c;
                 }
                 continue;
             }
-            $text .= self::convertWord($word);
-            $word = '';
+            if($word != '') {
+                $text .= self::convertWord($word);
+                $word = '';
+            }
             $text .= $c;
         }
         $text .= self::convertWord($word);

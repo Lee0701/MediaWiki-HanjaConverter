@@ -15,9 +15,9 @@ class HanjaConverter {
             for($j = $len - $i ; $j > 0 ; $j--) {
                 $key = iconv_substr($hanja, $i, $j);
                 $value = null;
-                if(isset($userDictionary[$key])) $value = $userDictionary[$key];
-                else if(isset(Dictionary::$dictionary[$key])) $value = Dictionary::$dictionary[$key];
-                if($value) {
+                $grade = null;
+                if(isset($userDictionary[$key])) {
+                    $value = $userDictionary[$key];
                     $grades = array();
                     for($k = 0 ; $k < $j ; $k++) {
                         $c = iconv_substr($key, $k, 1);
@@ -25,7 +25,13 @@ class HanjaConverter {
                         array_push($grades, HanjaGrades::gradeOf($c));
                     }
                     $grade = min($grades);
-
+                } else if(isset(Dictionary::$dictionary[$key])) {
+                    $value = Dictionary::$dictionary[$key];
+                    $value = explode(':', $value);
+                    $grade = intval($value[1]);
+                    $value = $value[0];
+                }
+                if($value !== null && $grade !== null) {
                     array_push($result, array($key, $value, $grade));
                     $i += $j;
                     $found = true;
