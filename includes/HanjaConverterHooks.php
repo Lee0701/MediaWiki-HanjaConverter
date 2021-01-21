@@ -12,10 +12,7 @@ class HanjaConverterHooks {
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
         $hanja_range = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
-        // $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
-        $chars = array();
-        preg_match_all('/./u', $text, $chars);
-        $chars = $chars[0];
+        $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
         $text = '';
         $len = count($chars);
         $brackets = 0;
