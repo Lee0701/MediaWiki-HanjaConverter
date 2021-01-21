@@ -1,21 +1,21 @@
 <?php
 
 class UserDictionary {
-    private static $userDictionarySource = null;
+    public static $USER_DICTIONARY_PAGE_NAME = 'HanjaConverter-UserDictionary';
+
     private static $userDictionary = null;
 
-    public static function get() {
-        $newUserDictionarySource = self::readUserDictionary();
-        if($newUserDictionarySource !== self::$userDictionarySource) {
-            self::$userDictionary = self::parseUserDictionary($newUserDictionarySource);
-            self::$userDictionarySource = $newUserDictionarySource;
+    public static function get($force_reload = false) {
+        if(self::$userDictionary === null || $force_reload) {
+            $source = self::readUserDictionary();
+            self::$userDictionary = self::parseUserDictionary($source);
         }
         return self::$userDictionary;
     }
 
     public static function readUserDictionary() {
         $content = ContentHandler::getContentText(WikiPage::factory(
-            Title::newFromText('HanjaConverter-UserDictionary', NS_MEDIAWIKI)
+            Title::newFromText(self::$USER_DICTIONARY_PAGE_NAME, NS_MEDIAWIKI)
         )->getContent(Revision::RAW));
         return $content;
     }
