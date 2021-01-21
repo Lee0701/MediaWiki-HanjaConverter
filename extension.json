@@ -10,6 +10,7 @@
     "Hooks": {
         "InternalParseBeforeLinks": "HanjaConverterHooks::onInternalParseBeforeLinks",
         "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin",
+        "OutputPageParserOutput": "HanjaConverterHooks::onOutputPageParserOutput",
         "BeforePageDisplay": "HanjaConverterHooks::onBeforePageDisplay",
         "GetPreferences": "HanjaConverterHooks::onGetPreferences",
         "GetDefaultSortkey": "HanjaConverterHooks::onGetDefaultSortkey"

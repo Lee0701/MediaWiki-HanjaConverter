@@ -73,6 +73,10 @@ class HanjaConverterHooks {
         $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
     }
 
+    public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
+        $parserOutput->setDisplayTitle(self::convertWord($parserOutput->getDisplayTitle()));
+    }
+
     public static function onGetPreferences(User $user, array &$preferences) {
         $options = array();
         $options[wfMessage("tog-HanjaConverter-none")->parse()] = "none";
