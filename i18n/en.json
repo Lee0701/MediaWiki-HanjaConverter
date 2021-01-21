@@ -1,4 +1,5 @@
 {
+    "prefs-HanjaConverter": "HanjaConverter",
     "tog-HanjaConverter-displayRubyForUnknownLink": "Always display ruby for unknown links",
     "tog-HanjaConverter-displayRubyForGrade": "Minimal grade for ruby display",
     "tog-HanjaConverter-rubyDisplayType": "Ruby display type",

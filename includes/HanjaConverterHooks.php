@@ -85,7 +85,7 @@ class HanjaConverterHooks {
                 wfMessage("tog-HanjaConverter-top")->parse() => 'ruby-text'
             ),
             'label-message' => 'tog-HanjaConverter-rubyDisplayType',
-            'section' => 'rendering',
+            'section' => 'rendering/HanjaConverter',
         ];
         $options = array();
         $options[wfMessage("tog-HanjaConverter-none")->parse()] = "none";
@@ -97,12 +97,12 @@ class HanjaConverterHooks {
             'label-message' => 'tog-HanjaConverter-displayRubyForGrade',
             'options' => $options,
             'default' => $user->getOption('displayRubyForGrade', 'grade80'),
-            'section' => 'rendering',
+            'section' => 'rendering/HanjaConverter',
         ];
         $preferences['displayRubyForUnknownLink'] = [
             'type' => 'toggle',
             'label-message' => 'tog-HanjaConverter-displayRubyForUnknownLink',
-            'section' => 'rendering',
+            'section' => 'rendering/HanjaConverter',
         ];
     }
     
