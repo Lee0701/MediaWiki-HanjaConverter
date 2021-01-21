@@ -25,13 +25,14 @@ class HanjaConverterHooks {
             } else if($c == '[') {
                 $bracket .= $c;
             } else if(iconv_strlen($bracket) < 2 && !iconv_strpos("$bracket", '[[')) {
-                if($c == '\n' || $c == ' ') {
-                    $result_text .= self::convertWord($word);
-                    $result_text .= $c;
-                    $word = '';
-                } else if(preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) > 10) {
-                    $result_text .= self::convertWord($word);
-                    $word = $c;
+                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) > 10) {
+                    if($word == '') {
+                        $result_text .= $c;
+                    } else {
+                        $result_text .= self::convertWord($word);
+                        $result_text .= $c;
+                        $word = '';
+                    }
                 } else {
                     $word .= $c;
                 }
