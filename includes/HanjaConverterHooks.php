@@ -12,25 +12,27 @@ class HanjaConverterHooks {
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
         $hanja_range = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
-        $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
-        $result_text = '';
+        // $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
+        $chars = array();
+        preg_match_all('/./u', $text, $chars);
+        $chars = $chars[0];
+        $text = '';
         $len = count($chars);
-        $bracket = '';
+        $brackets = 0;
         $word = '';
         for( $i = 0 ; $i < $len ; $i++ ) {
             $c = $chars[$i];
-            $bracket_last = iconv_substr($bracket, -1, 1);
             if($c == ']') {
-                if($bracket_last == '[') $bracket = iconv_substr($bracket, 0, -1);
+                $brackets--;
             } else if($c == '[') {
-                $bracket .= $c;
-            } else if(iconv_strlen($bracket) < 2 && !iconv_strpos("$bracket", '[[')) {
-                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) > 10) {
+                $brackets++;
+            } else if($brackets < 2) {
+                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) > 5) {
                     if($word == '') {
-                        $result_text .= $c;
+                        $text .= $c;
                     } else {
-                        $result_text .= self::convertWord($word);
-                        $result_text .= $c;
+                        $text .= self::convertWord($word);
+                        $text .= $c;
                         $word = '';
                     }
                 } else {
@@ -38,12 +40,11 @@ class HanjaConverterHooks {
                 }
                 continue;
             }
-            $result_text .= self::convertWord($word);
+            $text .= self::convertWord($word);
             $word = '';
-            $result_text .= $c;
+            $text .= $c;
         }
-        $result_text .= self::convertWord($word);
-        $text = $result_text;
+        $text .= self::convertWord($word);
     }
 
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
