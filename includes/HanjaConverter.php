@@ -47,23 +47,30 @@ class HanjaConverter {
         return $result;
     }
     
-    public static function convertWord($word, $unknown='') {
+    public static function convertWord($word) {
         $arr = array('');
-        $result = '';
         foreach(HanjaConverter::convert($word) as $item) {
             if(is_array($item)) {
                 if(is_array($arr[array_key_last($arr)])) {
-                    $end = array_pop($arr);
-                    $end[0] .= $item[0];
-                    $end[1] .= $item[1];
-                    if($item[2] < $end[2]) $end[2] = $item[2];
-                    array_push($arr, $end);
+                    $last = array_pop($arr);
+                    $last[0] .= $item[0];
+                    $last[1] .= $item[1];
+                    if($item[2] < $last[2]) $last[2] = $item[2];
+                    array_push($arr, $last);
                 }
                 else array_push($arr, $item);
             } else {
                 array_push($arr, $item);
             }
         }
+        array_shift($arr);
+        return $arr;
+    }
+    
+    public static function format($arr, $unknown=false) {
+        if($unknown) $unknown = ' unknown';
+        else $unknown = '';
+        $result = '';
         foreach($arr as $item) {
             if(is_array($item)) {
                 $key = $item[0];
@@ -76,7 +83,11 @@ class HanjaConverter {
         }
         return $result;
     }
-    
+
+    public static function formatWord($word, $unknown=false) {
+        return self::format(self::convertWord($word), $unknown);
+    }
+
 }
 
 ?>

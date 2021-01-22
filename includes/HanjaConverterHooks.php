@@ -24,11 +24,11 @@ class HanjaConverterHooks {
             } else if($c == '[') {
                 $brackets++;
             } else if($brackets < 2) {
-                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0 || strlen($word) > 30) {
+                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0) {
                     if($word == '') {
                         $text .= $c;
                     } else {
-                        $text .= HanjaConverter::convertWord($word);
+                        $text .= self::convertEvery(10, $word);
                         $word = $c;
                     }
                 } else {
@@ -37,22 +37,20 @@ class HanjaConverterHooks {
                 continue;
             }
             if($word != '') {
-                $text .= HanjaConverter::convertWord($word);
+                $text .= self::convertEvery(10, $word);
                 $word = '';
             }
             $text .= $c;
         }
-        $text .= HanjaConverter::convertWord($word);
+        $text .= self::convertEvery(10, $word);
     }
 
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
-        $unknown = '';
-        if(!$target->isKnown()) $unknown = ' unknown';
 
         $label = HtmlArmor::getHtml($text);
-        $result = HanjaConverter::convertWord($label, $unknown);
+        $result = HanjaConverter::formatWord($label, !$target->isKnown());
         $text = new HtmlArmor($result);
     }
     
@@ -74,7 +72,7 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $parserOutput->setDisplayTitle(HanjaConverter::convertWord($parserOutput->getDisplayTitle()));
+        $parserOutput->setDisplayTitle(self::convertEvery(10, $parserOutput->getDisplayTitle()));
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
@@ -115,6 +113,29 @@ class HanjaConverterHooks {
         }
         $sortkey = $result;
         return ;
+    }
+
+    private static function convertEvery($n, $word) {
+        $chars = preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY);
+        $arr = array('');
+        while(count($chars) > 0) {
+            $chunk = array_splice($chars, 0, $n);
+            $converted = HanjaConverter::convertWord(implode('', $chunk));
+            $last = array_pop($arr);
+            $continuing = array_shift($converted);
+            if(is_array($last) && is_array($continuing)) {
+                $last[0] .= $continuing[0];
+                $last[1] .= $continuing[1];
+                if($continuing[2] < $last[2]) $last[2] = $continuing[2];
+                array_push($arr, $last);
+            } else {
+                array_push($arr, $last);
+                array_unshift($converted, $continuing);
+            }
+            $arr = array_merge($arr, $converted);
+        }
+        array_shift($arr);
+        return HanjaConverter::format($arr);
     }
 
 }
