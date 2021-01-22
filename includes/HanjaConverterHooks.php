@@ -72,7 +72,7 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $parserOutput->setDisplayTitle(self::convertEvery(10, $parserOutput->getDisplayTitle()));
+        $parserOutput->setDisplayTitle(HanjaConverter::formatWord($parserOutput->getDisplayTitle()));
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
