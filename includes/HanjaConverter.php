@@ -6,11 +6,11 @@ require_once('UserDictionary.php');
 class HanjaConverter {
     public static function convert($hanja) {
         $userDictionary = UserDictionary::get();
-
+        
         $chars = preg_split('//u', $hanja, -1, PREG_SPLIT_NO_EMPTY);
         $len = count($chars);
         $result = array();
-
+        
         for($i = 0 ; $i < $len ; ) {
             $found = false;
             for($j = $len - $i ; $j > 0 ; $j--) {
@@ -46,6 +46,37 @@ class HanjaConverter {
         }
         return $result;
     }
+    
+    public static function convertWord($word, $unknown='') {
+        $arr = array('');
+        $result = '';
+        foreach(HanjaConverter::convert($word) as $item) {
+            if(is_array($item)) {
+                $end = array_pop($arr);
+                if(is_array($end)) {
+                    $end[0] .= $item[0];
+                    $end[1] .= $item[1];
+                    if($item[2] < $end[2]) $end[2] = $item[2];
+                    array_push($arr, $end);
+                }
+                else array_push($arr, $item);
+            } else {
+                array_push($arr, $item);
+            }
+        }
+        foreach($arr as $item) {
+            if(is_array($item)) {
+                $key = $item[0];
+                $value = $item[1];
+                $grade = $item[2];
+                $result .= Ruby::format($key, $value, "grade$grade$unknown");
+            } else {
+                $result .= $item;
+            }
+        }
+        return $result;
+    }
+    
 }
 
 ?>

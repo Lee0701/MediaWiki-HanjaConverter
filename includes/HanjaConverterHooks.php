@@ -28,7 +28,7 @@ class HanjaConverterHooks {
                     if($word == '') {
                         $text .= $c;
                     } else {
-                        $text .= self::convertWord($word);
+                        $text .= HanjaConverter::convertWord($word);
                         $word = $c;
                     }
                 } else {
@@ -37,12 +37,12 @@ class HanjaConverterHooks {
                 continue;
             }
             if($word != '') {
-                $text .= self::convertWord($word);
+                $text .= HanjaConverter::convertWord($word);
                 $word = '';
             }
             $text .= $c;
         }
-        $text .= self::convertWord($word);
+        $text .= HanjaConverter::convertWord($word);
     }
 
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
@@ -52,7 +52,7 @@ class HanjaConverterHooks {
         if(!$target->isKnown()) $unknown = ' unknown';
 
         $label = HtmlArmor::getHtml($text);
-        $result = self::convertWord($label, $unknown);
+        $result = HanjaConverter::convertWord($label, $unknown);
         $text = new HtmlArmor($result);
     }
     
@@ -74,7 +74,7 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $parserOutput->setDisplayTitle(self::convertWord($parserOutput->getDisplayTitle()));
+        $parserOutput->setDisplayTitle(HanjaConverter::convertWord($parserOutput->getDisplayTitle()));
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
@@ -115,21 +115,6 @@ class HanjaConverterHooks {
         }
         $sortkey = $result;
         return ;
-    }
-
-    private static function convertWord($word, $unknown='') {
-        $result = "";
-        foreach(HanjaConverter::convert($word) as $item) {
-            if(is_array($item)) {
-                $key = $item[0];
-                $value = $item[1];
-                $grade = $item[2];
-                $result .= Ruby::format($key, $value, "grade$grade$unknown");
-            } else {
-                $result .= $item;
-            }
-        }
-        return $result;
     }
 
 }
