@@ -24,7 +24,7 @@ class HanjaConverterHooks {
             } else if($c == '[') {
                 $brackets++;
             } else if($brackets < 2) {
-                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0 || iconv_strlen($word) >= 5) {
+                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0 || strlen($word) > 30) {
                     if($word == '') {
                         $text .= $c;
                     } else {
