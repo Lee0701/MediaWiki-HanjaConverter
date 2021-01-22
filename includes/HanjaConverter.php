@@ -52,8 +52,8 @@ class HanjaConverter {
         $result = '';
         foreach(HanjaConverter::convert($word) as $item) {
             if(is_array($item)) {
-                $end = array_pop($arr);
-                if(is_array($end)) {
+                if(is_array($arr[array_key_last($arr)])) {
+                    $end = array_pop($arr);
                     $end[0] .= $item[0];
                     $end[1] .= $item[1];
                     if($item[2] < $end[2]) $end[2] = $item[2];
