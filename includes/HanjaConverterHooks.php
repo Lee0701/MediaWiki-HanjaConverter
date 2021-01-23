@@ -80,7 +80,7 @@ class HanjaConverterHooks {
             'type' => 'select',
             'options' => array(
                 wfMessage("tog-HanjaConverter-side")->parse() => 'inline-block',
-                wfMessage("tog-HanjaConverter-top")->parse() => 'ruby-text'
+                wfMessage("tog-HanjaConverter-top")->parse() => 'revert'
             ),
             'label-message' => 'tog-HanjaConverter-rubyDisplayType',
             'section' => 'rendering/HanjaConverter',
