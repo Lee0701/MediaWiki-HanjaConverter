@@ -53,6 +53,7 @@ class HanjaConverter {
                     
                     $i += $j;
                     $found = true;
+                    $initial = false;
                     break;
                 }
             }
@@ -60,7 +61,6 @@ class HanjaConverter {
                 array_push($result, $chars[$i]);
                 $i++;
             }
-            $initial = false;
         }
         return $result;
     }
