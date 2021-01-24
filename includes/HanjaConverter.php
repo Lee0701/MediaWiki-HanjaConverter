@@ -129,9 +129,12 @@ class HanjaConverter {
         $len = count($chars);
         $brackets = 0;
         $word = '';
-        $whitespaced = $initial;
         for( $i = 0 ; $i < $len ; $i++ ) {
             $c = $chars[$i];
+            // Links do not span between lines
+            if(preg_match('/\n/u', $c) !== 0) {
+                $brackets = 0;
+            }
             if($c == ']') {
                 $brackets--;
             } else if($c == '[') {
@@ -142,24 +145,24 @@ class HanjaConverter {
                     if($word == '') {
                         array_push($arr, $c);
                     } else {
-                        $arr = array_merge($arr, self::convertEvery($every_n, $word, $whitespaced));
+                        $arr = array_merge($arr, self::convertEvery($every_n, $word, $initial));
                         $word = '';
                         array_push($arr, $c);
                     }
-                    if($is_whitespace) $whitespaced = true;
-                    else $whitespaced = false;
+                    if($is_whitespace) $initial = true;
+                    else $initial = false;
                 } else {
                     $word .= $c;
                 }
                 continue;
             }
             if($word != '') {
-                $arr = array_merge($arr, self::convertEvery($every_n, $word, $whitespaced));
+                $arr = array_merge($arr, self::convertEvery($every_n, $word, $initial));
                 $word = '';
             }
             array_push($arr, $c);
         }
-        $arr = array_merge($arr, self::convertEvery($every_n, $word, $whitespaced));
+        $arr = array_merge($arr, self::convertEvery($every_n, $word, $initial));
         return $arr;
     }
 
