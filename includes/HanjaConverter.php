@@ -6,6 +6,8 @@ require_once('UserDictionary.php');
 class HanjaConverter {
 
     private static $HALF_VOWELS_FOR_INITIAL_SOUND_LAW = 'ᅣᅤᅧᅨᅭᅲᅵ';
+    private static $HANJA_RANGE = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
+    private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
 
     public static function convert($hanja, $initial=false) {
         $userDictionary = UserDictionary::get();
@@ -53,7 +55,6 @@ class HanjaConverter {
                     
                     $i += $j;
                     $found = true;
-                    $initial = false;
                     break;
                 }
             }
@@ -61,16 +62,18 @@ class HanjaConverter {
                 array_push($result, $chars[$i]);
                 $i++;
             }
+            $initial = false;
         }
         return $result;
     }
 
     private static function calculateGrade($chars, $offset=0, $len=-1) {
+        $hangulRange = self::$HANGUL_RANGE;
         if($len == -1) $len = count($chars);
         $grades = array();
         for($k = 0 ; $k < $len ; $k++) {
             $c = $chars[$offset + $k];
-            if($c >= "가" and $c <= "힣") continue;
+            if(preg_match("/$hangulRange/u", $c) !== 0) continue;
             array_push($grades, HanjaGrades::gradeOf($c));
         }
         if(count($grades) > 0) $grade = min($grades);
@@ -124,6 +127,8 @@ class HanjaConverter {
     }
 
     public static function convertText($every_n, $text, $initial=true) {
+        $hanjaRange = self::$HANJA_RANGE;
+        $hangulRange = self::$HANGUL_RANGE;
         $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
         $arr = array();
         $len = count($chars);
@@ -140,7 +145,9 @@ class HanjaConverter {
             } else if($c == '[') {
                 $brackets++;
             } else if($brackets < 2) {
-                $is_whitespace = preg_match("/\\s/u", $c) !== 0;
+                $is_whitespace = preg_match("/[\\s]/u", $c) !== 0;
+                $is_hangul = preg_match("/$hangulRange/u", $c) !== 0;
+                $is_hanja = preg_match("/$hanjaRange/u", $c) !== 0;
                 if($is_whitespace) {
                     if($word == '') {
                         array_push($arr, $c);
@@ -149,7 +156,7 @@ class HanjaConverter {
                         $word = '';
                         array_push($arr, $c);
                     }
-                    if($is_whitespace) $initial = true;
+                    if(!$is_hangul || !$is_hanja) $initial = true;
                     else $initial = false;
                 } else {
                     $word .= $c;
