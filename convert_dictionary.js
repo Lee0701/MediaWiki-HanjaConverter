@@ -1,5 +1,4 @@
 
-const hanjaGrades = require('./hanja_grades')
 const fs = require('fs')
 
 const dic2 = fs.readFileSync('dicts/dic2.txt').toString().split('\n')
@@ -22,22 +21,14 @@ hanjaTxt
             hanjaTxtDict[hanja].push(reading)
         })
 
-const grade = (hanja) => hanja.split('').filter((c) => c.replace(/[가-힣ㄱ-ㅎㅏ-ㅣ]/g, '')).map((c) => {
-    const grade = Object.entries(hanjaGrades).find(([_grade, list]) => list.indexOf(c) != -1)
-    if(grade === undefined) return 0
-    else return parseInt(grade[0])
-})
-const minGrade = (hanja) => grade(hanja).reduce((a, c) => a < c ? a : c)
-const maxGrade = (hanja) => grade(hanja).reduce((a, c) => a > c ? a : c)
-
 Object.entries(dict).forEach(([key, value]) => {
     if(hanjaTxtDict[key] && !hanjaTxtDict[key].includes(value)) dict[key] = hanjaTxtDict[key][0]
 })
 
 const result = Object.entries(dict)
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
-        .filter(([hanja, reading]) => hanja.length == reading.length && !(maxGrade(hanja) == 0 && hanja.length > 1 || hanja.length > 5 || hanja.match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/)))
-        .map(([hanja, reading, grade]) => `"${hanja}"=>"${reading}:${minGrade(hanja)}"`)
+        .filter(([hanja, reading]) => hanja.length == reading.length && !(hanja.length > 5 || hanja.match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/)))
+        .map(([hanja, reading]) => `"${hanja}"=>"${reading}"`)
         .join(',\n')
 const comment = commentLines.join('\n')
 console.log([

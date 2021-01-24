@@ -16,26 +16,34 @@ class HanjaConverter {
             for($j = $len - $i ; $j > 0 ; $j--) {
                 $key = implode('', array_slice($chars, $i, $j));
                 $value = null;
-                $grade = null;
                 if(isset($userDictionary[$key])) {
                     $value = $userDictionary[$key];
+                } else if(isset(Dictionary::$dictionary[$key])) {
+                    $value = Dictionary::$dictionary[$key];
+                }
+                if($value !== null) {
                     $grades = array();
                     for($k = 0 ; $k < $j ; $k++) {
                         $c = $chars[$i + $k];
                         if($c >= "가" and $c <= "힣") continue;
                         array_push($grades, HanjaGrades::gradeOf($c));
                     }
-                    $grade = min($grades);
-                } else if(isset(Dictionary::$dictionary[$key])) {
-                    $value = Dictionary::$dictionary[$key];
-                    $value = explode(':', $value);
-                    $grade = intval($value[1]);
-                    $value = $value[0];
-                }
-                if($value !== null && $grade !== null) {
-                    array_push($result, array($key, $value, $grade));
-                    $i += $j;
-                    $found = true;
+                    if(count($grades) > 0) {
+                        $grade = min($grades);
+                        array_push($result, array($key, $value, $grade));
+                        $i += $j;
+                        $found = true;
+                    }
+                    // $value = preg_split('//u', $value, -1, PREG_SPLIT_NO_EMPTY);
+                    // for($k = 0 ; $k < $j ; $k++) {
+                    //     $kc = $chars[$i + $k];
+                    //     $vc = $value[$k];
+                    //     if($kc >= "가" and $kc <= "힣") $grade = 0;
+                    //     else $grade = HanjaGrades::gradeOf($kc);
+                    //     array_push($result, array($kc, $vc, $grade));
+                    // }
+                    // $i += $j;
+                    // $found = true;
                     break;
                 }
             }
@@ -59,6 +67,7 @@ class HanjaConverter {
                     array_push($arr, $last);
                 }
                 else array_push($arr, $item);
+                // array_push($arr, $item);
             } else {
                 array_push($arr, $item);
             }
