@@ -10,6 +10,8 @@ class HanjaConverter {
     private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
 
     public static function convert($hanja, $initial=false) {
+        $hanjaRange = self::$HANJA_RANGE;
+        $hangulRange = self::$HANGUL_RANGE;
         $userDictionary = UserDictionary::get();
 
         $chars = preg_split('//u', $hanja, -1, PREG_SPLIT_NO_EMPTY);
@@ -17,6 +19,7 @@ class HanjaConverter {
         $result = array();
         
         for($i = 0 ; $i < $len ; ) {
+            $c = $chars[$i];
             $found = false;
             for($j = $len - $i ; $j > 0 ; $j--) {
                 $key = implode('', array_slice($chars, $i, $j));
@@ -62,7 +65,9 @@ class HanjaConverter {
                 array_push($result, $chars[$i]);
                 $i++;
             }
-            $initial = false;
+            $is_word = preg_match("/[$hangulRange$hanjaRange\\w]/u", $c) !== 0;
+            if($is_word) $initial = false;
+            else $initial = true;
         }
         return $result;
     }
@@ -127,8 +132,6 @@ class HanjaConverter {
     }
 
     public static function convertText($every_n, $text, $initial=true) {
-        $hanjaRange = self::$HANJA_RANGE;
-        $hangulRange = self::$HANGUL_RANGE;
         $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
         $arr = array();
         $len = count($chars);
@@ -146,8 +149,6 @@ class HanjaConverter {
                 $brackets++;
             } else if($brackets < 2) {
                 $is_whitespace = preg_match("/[\\s]/u", $c) !== 0;
-                $is_hangul = preg_match("/$hangulRange/u", $c) !== 0;
-                $is_hanja = preg_match("/$hanjaRange/u", $c) !== 0;
                 if($is_whitespace) {
                     if($word == '') {
                         array_push($arr, $c);
@@ -156,7 +157,7 @@ class HanjaConverter {
                         $word = '';
                         array_push($arr, $c);
                     }
-                    if(!$is_hangul || !$is_hanja) $initial = true;
+                    if($is_whitespace) $initial = true;
                     else $initial = false;
                 } else {
                     $word .= $c;
