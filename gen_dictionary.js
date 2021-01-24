@@ -1,6 +1,8 @@
 
 const fs = require('fs')
 
+const chunkSize = 10
+
 const dic2 = fs.readFileSync('dicts/dic2.txt').toString().split('\n')
 const hanjaTxt = fs.readFileSync('dicts/hanja.txt').toString().split('\n')
 const krStdict = fs.readFileSync('dicts/kr-stdict.tsv').toString().split('\n')
@@ -25,11 +27,12 @@ Object.entries(dict).forEach(([key, value]) => {
     if(hanjaTxtDict[key] && !hanjaTxtDict[key].includes(value)) dict[key] = hanjaTxtDict[key][0]
 })
 
-const result = Object.entries(dict)
+const table = Object.entries(dict)
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
         .filter(([hanja, reading]) => hanja.length == reading.length && !(hanja.length > 5 || hanja.match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/)))
         .map(([hanja, reading]) => `"${hanja}"=>"${reading}"`)
-        .join(',\n')
+const chunked = new Array(Math.ceil(table.length / chunkSize)).fill().map((_, i) => table.slice(i*chunkSize, (i+1)*chunkSize))
+const result = chunked.map((chunk) => chunk.join(',')).join(',\n')
 const comment = commentLines.join('\n')
 console.log([
     '<?php',
