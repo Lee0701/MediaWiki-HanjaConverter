@@ -11,38 +11,7 @@ class HanjaConverterHooks {
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
-        $hanja_range = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
-        $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
-        $text = '';
-        $len = count($chars);
-        $brackets = 0;
-        $word = '';
-        for( $i = 0 ; $i < $len ; $i++ ) {
-            $c = $chars[$i];
-            if($c == ']') {
-                $brackets--;
-            } else if($c == '[') {
-                $brackets++;
-            } else if($brackets < 2) {
-                if($c == '\n' || $c == ' ' || preg_match("/[$hanja_range]/u", $c) == 0) {
-                    if($word == '') {
-                        $text .= $c;
-                    } else {
-                        $text .= self::convertEvery(10, $word);
-                        $word = $c;
-                    }
-                } else {
-                    $word .= $c;
-                }
-                continue;
-            }
-            if($word != '') {
-                $text .= self::convertEvery(10, $word);
-                $word = '';
-            }
-            $text .= $c;
-        }
-        $text .= self::convertEvery(10, $word);
+        $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
     }
 
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
@@ -50,7 +19,7 @@ class HanjaConverterHooks {
         if(!($text instanceof HtmlArmor)) return true;
 
         $label = HtmlArmor::getHtml($text);
-        $result = HanjaConverter::formatWord($label, !$target->isKnown());
+        $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
         $text = new HtmlArmor($result);
     }
     
@@ -72,7 +41,8 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $parserOutput->setDisplayTitle(HanjaConverter::formatWord($parserOutput->getDisplayTitle()));
+        $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
+        $parserOutput->setDisplayTitle($title);
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
@@ -106,36 +76,12 @@ class HanjaConverterHooks {
     
     public static function onGetDefaultSortkey($title, &$sortkey) {
         $result = "";
-        foreach(HanjaConverter::convert($title) as $item) {
+        foreach(HanjaConverter::convertText(null, $title, true) as $item) {
             if(is_array($item)) $item = $item[1];
-            if(iconv_strpos($item, "/") !== false) $item = explode("/", $item)[0];
             $result .= $item;
         }
         $sortkey = $result;
-        return ;
-    }
-
-    private static function convertEvery($n, $word) {
-        $chars = preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY);
-        $arr = array('');
-        while(count($chars) > 0) {
-            $chunk = array_splice($chars, 0, $n);
-            $converted = HanjaConverter::convertWord(implode('', $chunk));
-            $last = array_pop($arr);
-            $continuing = array_shift($converted);
-            if(is_array($last) && is_array($continuing)) {
-                $last[0] .= $continuing[0];
-                $last[1] .= $continuing[1];
-                if($continuing[2] < $last[2]) $last[2] = $continuing[2];
-                array_push($arr, $last);
-            } else {
-                array_push($arr, $last);
-                array_unshift($converted, $continuing);
-            }
-            $arr = array_merge($arr, $converted);
-        }
-        array_shift($arr);
-        return HanjaConverter::format($arr);
+        return;
     }
 
 }
