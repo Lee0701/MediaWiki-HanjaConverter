@@ -24,6 +24,7 @@ class UserDictionary {
         $lines = explode("\n", $content);
         $dictionary = array();
         foreach($lines as $line) {
+            $line = trim($line);
             if(strpos($line, '#') === 0) continue;
             $item = explode("=>", $line);
             if(count($item) < 2) continue;

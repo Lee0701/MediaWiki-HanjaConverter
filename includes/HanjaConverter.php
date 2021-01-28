@@ -177,38 +177,41 @@ class HanjaConverter {
     public static function convertTitle($title) {
         $title_dictionary_content = TitleDictionary::get($title);
         if($title_dictionary_content === null) return self::convertText(null, $title, true);
-        $words = preg_split('/ /u', $title_dictionary_content, -1, PREG_SPLIT_NO_EMPTY);
         $arr = array();
-        foreach($words as $word) {
-            $parts = preg_split('/\\|/u', $word, -1, PREG_SPLIT_NO_EMPTY);
-            foreach($parts as $part) {
+        $lines = explode("\n", $title_dictionary_content);
+        foreach($lines as $line) {
+            $line = trim($line);
+            if(strpos($line, '#') === 0) continue;
+            if(strpos($line, '[[') === 0) continue;
+            if($line == '') {
+                array_push($arr, ' ');
+                continue;
+            } else {
+                // Separate words
                 array_push($arr, '');
-                $part = preg_split('/\:/u', $part, -1, PREG_SPLIT_NO_EMPTY);
-                $converted = null;
-                if(count($part) >= 2) $converted = array(array($part[0], $part[1], 0));
-                else $converted = self::convertWord($part[0], true);
-                if(is_array($converted)) {
-                    foreach($converted as $item) {
-                        $last = array_pop($arr);
-                        if(is_array($last) && is_array($item)) {
-                            $last[0] .= $item[0];
-                            $last[1] .= $item[1];
-                            if($item[2] < $last[2]) $last[2] = $item[2];
-                            array_push($arr, $last);
-                        } else {
-                            array_push($arr, $last);
-                            array_push($arr, $item);
-                        }
-                    }
-                } else {
-                    array_push($arr, $last);
-                    array_push($arr, $item);
-                }
             }
-            array_push($arr, ' ');
+            $item = explode('=>', $line);
+            $converted = null;
+            if(count($item) >= 2) $converted = array(array(trim($item[0]), trim($item[1]), 0));
+            else $converted = self::convertWord(trim($item[0]), true);
+            if(is_array($converted)) {
+                foreach($converted as $converted_item) {
+                    $last = array_pop($arr);
+                    if(is_array($last) && is_array($converted_item)) {
+                        $last[0] .= $converted_item[0];
+                        $last[1] .= $converted_item[1];
+                        if($converted_item[2] < $last[2]) $last[2] = $converted_item[2];
+                        array_push($arr, $last);
+                    } else {
+                        array_push($arr, $last);
+                        array_push($arr, $converted_item);
+                    }
+                }
+            } else {
+                array_push($arr, $last);
+                array_push($arr, $converted);
+            }
         }
-        // Remove last space
-        array_pop($arr);
         return $arr;
     }
 
