@@ -18,11 +18,22 @@ class HanjaConverterHooks {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
 
+        $title = $target->getText();
         $label = HtmlArmor::getHtml($text);
-        $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
+
+        $result = null;
+        if($title == $label) $result = HanjaConverter::convertTitle($title);
+        else $result = HanjaConverter::convertText(null, $label, true);
+        $result = HanjaConverter::format($result, !$target->isKnown());
         $text = new HtmlArmor($result);
     }
     
+    public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
+        $title = $parserOutput->getDisplayTitle();
+        $result = HanjaConverter::format(HanjaConverter::convertTitle($title));
+        $parserOutput->setDisplayTitle($result);
+    }
+
     public static function onBeforePageDisplay(OutputPage $outputPage, Skin $skin) {
         $outputPage->addModuleStyles('ext.HanjaConverter.ruby.hide');
         global $wgUser;
@@ -38,11 +49,6 @@ class HanjaConverterHooks {
             if("grade$g" == $grade) break;
         }
         $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
-    }
-
-    public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
-        $parserOutput->setDisplayTitle($title);
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
