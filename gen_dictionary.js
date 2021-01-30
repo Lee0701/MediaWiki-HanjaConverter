@@ -14,6 +14,8 @@ const initialSoundLaw = (c) => {
     return normalized.join('').normalize('NFC')
 }
 
+const removeLast = (str) => str.normalize('NFD').split('').slice(0, -1).join('').normalize('NFC')
+
 
 const commentLines = [['# (File: dic2.txt)', '#'], dic2, ['#', '# (File: hanja.txt)', '#'], hanjaTxt].flat()
         .filter((line => line.startsWith('#')))
@@ -34,6 +36,7 @@ hanjaTxt
 const table = Object.entries(hanjaTxtDict)
         .map(([hanja, readings]) => readings.map((reading) => [hanja, reading])).flat()
         .filter(([hanja, reading]) => hanja.length > 1 || dic2Dict[hanja] == reading)
+        .filter(([hanja, reading]) => !hanjaTxtDict[hanja].includes(removeLast(reading)))
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
         .reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {})
 
