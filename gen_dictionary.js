@@ -36,20 +36,29 @@ hanjaTxt
 const table = Object.entries(hanjaTxtDict)
         .map(([hanja, readings]) => readings.map((reading) => [hanja, reading])).flat()
         .filter(([hanja, reading]) => hanja.length > 1 || dic2Dict[hanja] == reading)
-        .filter(([hanja, reading]) => !hanjaTxtDict[hanja].includes(removeLast(reading)))
+        .filter(([hanja, reading]) => !hanjaTxtDict[hanja].includes(removeLast(reading))) // 사이시옷으로 끝나는 말 제거
+        .filter(([hanja, reading]) => {
+            if(hanja.length == 1) return true
+            if(hanja.length != reading.length) return false
+            if(hanja.split('').some((h, i) => {
+                const r = reading.charAt(i)
+                if(h == r) return false
+                else if(hanjaTxtDict[h] && !(hanjaTxtDict[h].includes(r) || hanjaTxtDict[h].includes(removeLast(r)))) return truee
+                else return false
+            })) return false
+            if(hanja.split('').every((h, i) => {
+                const r = reading.charAt(i)
+                if(h == r) return true
+                else if(dic2Dict[h] == r) return true
+                else return false
+            })) return false
+            return true
+        })
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
         .reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {})
 
 let filtered = Object.entries(table).filter(([hanja, reading]) => {
-    if(hanja.length == 1) return true
-    if(hanja.length != reading.length) return false
-    if(hanja.split('').every((h, i) => {
-        const r = reading.charAt(i)
-        if(h == r) return true
-        else if(dic2Dict[h] != r) return false
-        else if(hanjaTxtDict[h] && hanjaTxtDict[h].includes(r)) return true
-        else return false
-    })) return false
+
     let initial = true
     for(let i = 0; i < hanja.length;) {
         let found = false
@@ -57,7 +66,9 @@ let filtered = Object.entries(table).filter(([hanja, reading]) => {
             const key = hanja.slice(i, i + j)
             if(key == hanja) continue
             let value = table[key]
+            if(!value) continue
             let slicedReading = reading.slice(i, i + j)
+            // console.warn(key, value, slicedReading)
             if(value && initial) {
                 value = initialSoundLaw(value)
                 slicedReading = initialSoundLaw(slicedReading)
