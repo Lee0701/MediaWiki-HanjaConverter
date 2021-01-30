@@ -37,14 +37,16 @@ const table = Object.entries(hanjaTxtDict)
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
         .reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {})
 
-const filtered = Object.entries(table).filter(([hanja, reading]) => {
+let filtered = Object.entries(table).filter(([hanja, reading]) => {
     if(hanja.length == 1) return true
     if(hanja.length != reading.length) return false
-    for(let i = 0; i < hanja.length; i++) {
-        const h = hanja.charAt(i)
+    if(hanja.split('').every((h, i) => {
         const r = reading.charAt(i)
-        if(!hanjaTxtDict[h] || !hanjaTxtDict[h].includes(r)) return false
-    }
+        if(h == r) return true
+        else if(dic2Dict[h] != r) return false
+        else if(hanjaTxtDict[h] && hanjaTxtDict[h].includes(r)) return true
+        else return false
+    })) return false
     let initial = true
     for(let i = 0; i < hanja.length;) {
         let found = false
