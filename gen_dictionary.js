@@ -43,6 +43,7 @@ hanjaTxt
 // Add missing entries from dic2
 Object.entries(dic2Dict).forEach(([hanja, reading]) => {
     if(!dict[hanja]) dict[hanja] = [reading]
+    else if(!dict[hanja].includes(reading)) dict[hanja].push(reading)
 })
 
 // Check if every characters' reading is valid in itself
@@ -53,8 +54,8 @@ const checkReading = (hanja, reading) => {
         const r = reading.charAt(i)
         if(h == r) return true
         // Adding initial sound law for every character allows most of common pronunciation (like 困難:곤란)
-        if(duplicate) return dic2Dict[h] == r || dic2Dict[h] && initialSoundLaw(dic2Dict[h]) == initialSoundLaw(r)// || hanja.length == 2 && i < hanja.length-1 && dic2Dict[h] == removeLast(r)
-        else return !dict[h] || dict[h].includes(r) || dict[h].map((e) => initialSoundLaw(e)).includes(initialSoundLaw(r))// || i < hanja.length-1 && dict[h].includes(removeLast(r))
+        if(duplicate) return dic2Dict[h] == r || dic2Dict[h] && initialSoundLaw(dic2Dict[h]) == initialSoundLaw(r)
+        else return !dict[h] || dict[h].includes(r) || dict[h].map((e) => initialSoundLaw(e)).includes(initialSoundLaw(r))
     })
 }
 
@@ -105,7 +106,6 @@ const table = Object.entries(dict)
         .filter(([hanja, reading]) => dic2Dict[hanja] == reading || hanja.length > 1)
         .filter(([hanja, reading]) => checkDuplicate(hanja, reading))
         .filter(([hanja, reading]) => checkReading(hanja, reading))
-        .filter(([hanja, reading]) => !dict[hanja].includes(removeLast(reading)))
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
 
 const map = Object.entries(table.reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {}))
