@@ -76,7 +76,7 @@ class HanjaConverterHooks {
     
     public static function onGetDefaultSortkey($title, &$sortkey) {
         $result = "";
-        foreach(HanjaConverter::convertText(null, $title, true) as $item) {
+        foreach(HanjaConverter::convertText(null, $title->getText(), true) as $item) {
             if(is_array($item)) $item = $item[1];
             $result .= $item;
         }
