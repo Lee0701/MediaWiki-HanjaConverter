@@ -1,8 +1,9 @@
 
 const fs = require('fs')
 
-const dic2 = fs.readFileSync('dicts/dic2.txt').toString().split('\n')
+const dic2Txt = fs.readFileSync('dicts/dic2.txt').toString().split('\n')
 const hanjaTxt = fs.readFileSync('dicts/hanja.txt').toString().split('\n')
+const overrideTxt = fs.readFileSync('dicts/override.txt').toString().split('\n')
 
 const CHUNK_SIZE = 10
 const chunk = (arr, chunkSize=CHUNK_SIZE) => new Array(Math.ceil(arr.length / chunkSize)).fill().map((_, i) => arr.slice(i*chunkSize, (i+1)*chunkSize))
@@ -17,13 +18,18 @@ const initialSoundLaw = (c) => {
 const removeLast = (str) => str.normalize('NFD').split('').slice(0, -1).join('').normalize('NFC')
 
 
-const commentLines = [['# (File: dic2.txt)', '#'], dic2, ['#', '# (File: hanja.txt)', '#'], hanjaTxt].flat()
+const commentLines = [['# (File: dic2.txt)', '#'], dic2Txt, ['#', '# (File: hanja.txt)', '#'], hanjaTxt].flat()
         .filter((line => line.startsWith('#')))
 
-const dic2Dict = dic2
+const dic2Dict = dic2Txt
         .filter((line) => !line.startsWith('#') && line.trim() !== '')
         .map((line) => line.split('\t')).filter((entry) => entry.length >= 2)
         .reduce((a, [hanja, reading]) => (a[hanja] = a[hanja] ? a[hanja] : reading.replace(/\s/g, ''), a), {})
+
+const overrideDict = overrideTxt
+        .filter((line) => !line.startsWith('#') && line.trim() !== '')
+        .map((line) => line.split(':')).filter((entry) => entry.length >= 2)
+        .reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {})
 
 const dict = {}
 // Add entries from hanja.txt
@@ -41,12 +47,14 @@ Object.entries(dic2Dict).forEach(([hanja, reading]) => {
 
 // Check if every characters' reading is valid in itself
 const checkReading = (hanja, reading) => {
+    const duplicate = dict[hanja] && dict[hanja].length > 1
+    if(overrideDict[hanja]) return overrideDict[hanja] == reading
     return hanja.split('').every((h, i) => {
         const r = reading.charAt(i)
         if(h == r) return true
-        const result = !dict[h] || dict[h].includes(r) || i < hanja.length-1 && dic2Dict[h] == removeLast(r)
-        if(!result) console.warn(hanja, reading, h, r)
-        return result
+        // Adding initial sound law for every character allows most of common pronunciation (like 困難:곤란)
+        if(duplicate) return dic2Dict[h] == r || dic2Dict[h] && initialSoundLaw(dic2Dict[h]) == initialSoundLaw(r)// || hanja.length == 2 && i < hanja.length-1 && dic2Dict[h] == removeLast(r)
+        else return !dict[h] || dict[h].includes(r) || dict[h].map((e) => initialSoundLaw(e)).includes(initialSoundLaw(r))// || i < hanja.length-1 && dict[h].includes(removeLast(r))
     })
 }
 
@@ -62,15 +70,18 @@ const checkDuplicate = (hanja, reading) => {
         else return false
     })) return false
     let initial = true
+    let allFound = true
     for(let i = 0; i < hanja.length;) {
         let found = false
         for(let j = hanja.length - i; j > 0; j--) {
             const key = hanja.slice(i, i + j)
             if(key == hanja) continue
-            let values = dict[key]
             let slicedReading = reading.slice(i, i + j)
-            if(values && values.length && initial) {
-                // values = values.map((v) => initialSoundLaw(v))
+            let values = dict[key]
+            if(j == 1) values = dic2Dict[key] ? [dic2Dict[key]] : []
+            if(key == slicedReading) values = [key]
+            if(initial && values && values.length) {
+                values = values.map((v) => initialSoundLaw(v))
                 slicedReading = initialSoundLaw(slicedReading)
             }
             if(values && values.includes(slicedReading)) {
@@ -79,9 +90,13 @@ const checkDuplicate = (hanja, reading) => {
                 break
             }
         }
-        if(!found) return true
+        if(!found) {
+            allFound = false
+            i += 1
+        }
         initial = false
     }
+    if(!allFound) return true
     return false
 }
 
@@ -93,7 +108,9 @@ const table = Object.entries(dict)
         .filter(([hanja, reading]) => !dict[hanja].includes(removeLast(reading)))
         .sort(([_hanja, reading], [_hanja2, reading2]) => reading.localeCompare(reading2))
 
-const chunked = chunk(table.map(([hanja, reading]) => `"${hanja}"=>"${reading}"`))
+const map = Object.entries(table.reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {}))
+
+const chunked = chunk(map.map(([hanja, reading]) => `"${hanja}"=>"${reading}"`))
 const result = chunked.map((chunk) => chunk.join(',')).join(',\n')
 const comment = commentLines.join('\n')
 console.log([
