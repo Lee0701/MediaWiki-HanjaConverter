@@ -110,7 +110,7 @@ const table = Object.entries(dict)
 
 const map = Object.entries(table.reduce((a, [hanja, reading]) => (a[hanja] = reading, a), {}))
 
-const chunked = chunk(map.map(([hanja, reading]) => `"${hanja}"=>"${reading}"`))
+const chunked = chunk(map.map(([hanja, reading]) => `"${hanja}"=>"${reading}"`), 1)
 const result = chunked.map((chunk) => chunk.join(',')).join(',\n')
 const comment = commentLines.join('\n')
 console.log([
