@@ -65,7 +65,7 @@ class HanjaConverter {
                 array_push($result, $chars[$i]);
                 $i++;
             }
-            $is_word = preg_match("/[$hangulRange$hanjaRange\\w]/u", $c) !== 0;
+            $is_word = preg_match("/[0-9A-Za-z$hanjaRange]/u", $c) !== 0;
             if($is_word) $initial = false;
             else $initial = true;
         }
