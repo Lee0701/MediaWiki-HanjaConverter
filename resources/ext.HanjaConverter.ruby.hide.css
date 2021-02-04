@@ -2,3 +2,7 @@
 ruby.hanja > rt, ruby.hanja > rp {
     display: none;
 }
+
+.noruby ruby.hanja > rt, .noruby ruby.hanja > rp {
+    display: none !important;
+}

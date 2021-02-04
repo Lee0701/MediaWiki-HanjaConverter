@@ -8,6 +8,14 @@ require_once('HanjaGrades.php');
 require_once('HanjaConverter.php');
 
 class HanjaConverterHooks {
+    public static function onParserFirstCallInit( Parser $parser ) {
+        $parser->setHook('noruby', [self::class, 'noRubyTag']);
+    }
+
+    public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $output = $parser->recursiveTagParse( $input, $frame );
+        return '<div class="noruby">' . $output . '</div>';
+    }
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;

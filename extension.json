@@ -8,6 +8,7 @@
         "HanjaConverterHooks": "includes/HanjaConverterHooks.php"
     },
     "Hooks": {
+        "ParserFirstCallInit": "HanjaConverterHooks::onParserFirstCallInit",
         "InternalParseBeforeLinks": "HanjaConverterHooks::onInternalParseBeforeLinks",
         "HtmlPageLinkRendererBegin": "HanjaConverterHooks::onHtmlPageLinkRendererBegin",
         "OutputPageParserOutput": "HanjaConverterHooks::onOutputPageParserOutput",
