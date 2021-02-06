@@ -70,7 +70,6 @@ const checkDuplicate = (hanja, reading) => {
         else if(dict[h] && dict[h].includes(r)) return true
         else return false
     })) return false
-    let initial = true
     let allFound = true
     for(let i = 0; i < hanja.length;) {
         let found = false
@@ -81,10 +80,6 @@ const checkDuplicate = (hanja, reading) => {
             let values = dict[key]
             if(j == 1) values = dic2Dict[key] ? [dic2Dict[key]] : []
             if(key == slicedReading) values = [key]
-            if(initial && values && values.length) {
-                values = values.map((v) => initialSoundLaw(v))
-                slicedReading = initialSoundLaw(slicedReading)
-            }
             if(values && values.includes(slicedReading)) {
                 i += j
                 found = true
@@ -113,7 +108,7 @@ const map = Object.entries(table.reduce((a, [hanja, reading]) => (a[hanja] = rea
 const chunked = chunk(map.map(([hanja, reading]) => `"${hanja}"=>"${reading}"`), 1)
 const result = chunked.map((chunk) => chunk.join(',')).join(',\n')
 const comment = commentLines.join('\n')
-console.log([
+fs.writeFileSync('Dictionary.php', [
     '<?php',
     comment,
     'class Dictionary {',
