@@ -11,7 +11,15 @@ const chunk = (arr, chunkSize=CHUNK_SIZE) => new Array(Math.ceil(arr.length / ch
 const buildMapDict = (lines) => lines
         .filter((line) => !line.startsWith('#') && line.trim() !== '')
         .map((line) => line.split('\t')).filter((entry) => entry.length >= 2)
-        .reduce((a, [hanja, reading]) => (a[hanja] = a[hanja] ? a[hanja] : reading.replace(/\s/g, ''), a), {})
+        .reduce((a, [hanja, reading]) => (a[hanja] = validate(hanja, a[hanja], reading), a), {})
+
+
+const validate = (hanja, oldReading, newReading) => {
+    if(!oldReading) return newReading
+    if(oldReading.normalize('NFD') + 'ᆺ' == newReading.normalize('NFD')) return oldReading
+    if(oldReading.normalize('NFD') == newReading.normalize('NFD') + 'ᆺ') return newReading
+    return oldReading
+}
 
 const initialSoundLaw = (c) => {
     const normalized = c.normalize('NFD').split('')
