@@ -33,10 +33,10 @@ class HanjaConverterHooks {
     
     public static function onBeforePageDisplay(OutputPage $outputPage, Skin $skin) {
         $outputPage->addModuleStyles('ext.HanjaConverter.ruby.hide');
-        global $wgUser;
-        $unknownLink = $wgUser->getOption('displayRubyForUnknownLink');
-        $grade = $wgUser->getOption('displayRubyForGrade');
-        $display = $wgUser->getOption('rubyDisplayType');
+        $user = $outputPage->getContext()->getUser();
+        $unknownLink = $user->getOption('displayRubyForUnknownLink');
+        $grade = $user->getOption('displayRubyForGrade');
+        $display = $user->getOption('rubyDisplayType');
         $style = "";
         if($unknownLink === '1') {
             $style .= "ruby.hanja.unknown > rt { display: $display; } ruby.hanja.unknown > rp { display: revert; }\n";
