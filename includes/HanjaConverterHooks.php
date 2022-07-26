@@ -15,18 +15,25 @@ class HanjaConverterHooks {
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
         $parser->noruby = true;
         $output = $parser->recursiveTagParse( $input, $frame );
-        unset($parser->noruby);
+        $parser->noruby = false;
         return $output;
     }
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
-        if(!isset($parser->noruby)) $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+        if(!isset($parser->noruby)) {
+            $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+            $parser->getLinkRenderer()->noruby = false;
+        } else {
+            $parser->getLinkRenderer()->noruby = true;
+        }
     }
 
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
+
+        if(isset($linkRenderer->noruby) && $linkRenderer->noruby == true) return true;
 
         $label = HtmlArmor::getHtml($text);
         $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
