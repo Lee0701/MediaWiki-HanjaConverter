@@ -13,13 +13,15 @@ class HanjaConverterHooks {
     }
 
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $parser->noruby = true;
         $output = $parser->recursiveTagParse( $input, $frame );
-        return '<div class="noruby">' . $output . '</div>';
+        unset($parser->noruby);
+        return $output;
     }
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
-        $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+        if(!isset($parser->noruby)) $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
     }
 
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
