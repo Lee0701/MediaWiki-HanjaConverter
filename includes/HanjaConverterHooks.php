@@ -10,19 +10,21 @@ require_once('HanjaConverter.php');
 class HanjaConverterHooks {
     public static function onParserFirstCallInit( Parser $parser ) {
         $parser->setHook('noruby', [self::class, 'noRubyTag']);
+        // A stack to store levels of ruby/noruby
+        $parser->noruby = array();
     }
 
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $parser->noruby = true;
         $input = self::addNoRubyToLinks($input);
+        array_push($parser->noruby, true);
         $output = $parser->recursiveTagParse( $input, $frame );
-        $parser->noruby = false;
+        array_pop($parser->noruby);
         return $output;
     }
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
-        if(!isset($parser->noruby) || !$parser->noruby) {
+        if(!end($parser->noruby)) {
             $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
         }
     }
