@@ -14,6 +14,7 @@ class HanjaConverterHooks {
 
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
         $parser->noruby = true;
+        $input = self::addNoRubyToLinks($input);
         $output = $parser->recursiveTagParse( $input, $frame );
         $parser->noruby = false;
         return $output;
@@ -94,6 +95,42 @@ class HanjaConverterHooks {
         }
         $sortkey = $result;
         return;
+    }
+
+    public static function addNoRubyToLinks($text) {
+        $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
+        $len = count($chars);
+        $brackets = 0;
+        $link = '';
+        $result = '';
+        for( $i = 0 ; $i < $len ; $i++ ) {
+            $c = $chars[$i];
+            // Links do not span between lines
+            if(preg_match('/\n/u', $c) !== 0) {
+                $brackets = 0;
+            }
+            if($c == ']') {
+                $brackets--;
+                continue;
+            } else if($c == '[') {
+                $brackets++;
+                continue;
+            } else if($brackets == 2) {
+                $link .= $c;
+                continue;
+            }
+            if($brackets == 0 && $link != '') {
+                $split = preg_split('/\\|/u', $link);
+                if(!isset($split[1])) $split[1] = '';
+                if($split[1] == '') $split[1] = $split[0];
+                $target = $split[0];
+                $display = $split[1];
+                $result .= "[[$target|<noruby>$display</noruby>]]";
+                $link = '';
+            }
+            $result .= $c;
+        }
+        return $result;
     }
 
 }
