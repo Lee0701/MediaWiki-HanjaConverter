@@ -29,7 +29,7 @@ class HanjaConverterHooks {
         }
     }
 
-    public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
+    public static function onHtmlPageLinkRendererBegin( LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret ) {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
 
@@ -38,21 +38,24 @@ class HanjaConverterHooks {
         $text = new HtmlArmor($result);
     }
     
-    public static function onBeforePageDisplay(OutputPage $outputPage, Skin $skin) {
+    public static function onBeforePageDisplay( OutputPage $outputPage, Skin $skin ) {
         $outputPage->addModuleStyles('ext.HanjaConverter.ruby.hide');
-        $user = $outputPage->getContext()->getUser();
-        $unknownLink = $user->getOption('displayRubyForUnknownLink');
-        $grade = $user->getOption('displayRubyForGrade');
-        $display = $user->getOption('rubyDisplayType');
-        $style = "";
-        if($unknownLink === '1') {
-            $style .= "ruby.hanja.unknown > rt { display: $display; } ruby.hanja.unknown > rp { display: revert; }\n";
+        $outputPage->addModules('ext.HanjaConverter.noruby');
+        if(!isset($_GET['noruby'])) {
+            $user = $outputPage->getContext()->getUser();
+            $unknownLink = $user->getOption('displayRubyForUnknownLink');
+            $grade = $user->getOption('displayRubyForGrade');
+            $display = $user->getOption('rubyDisplayType');
+            $style = "";
+            if($unknownLink === '1') {
+                $style .= "ruby.hanja.unknown > rt { display: $display; } ruby.hanja.unknown > rp { display: revert; }\n";
+            }
+            if($grade and $grade != 'none') foreach(HanjaGrades::$grades as $g) {
+                $style .= "ruby.hanja.grade$g > rt { display: $display; } ruby.hanja.grade$g > rp { display: revert; }\n";
+                if("grade$g" == $grade) break;
+            }
+            $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
         }
-        if($grade and $grade != 'none') foreach(HanjaGrades::$grades as $g) {
-            $style .= "ruby.hanja.grade$g > rt { display: $display; } ruby.hanja.grade$g > rp { display: revert; }\n";
-            if("grade$g" == $grade) break;
-        }
-        $outputPage->addHeadItem('HanjaConverter.ruby.show', "<style>$style</style>");
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
@@ -60,7 +63,7 @@ class HanjaConverterHooks {
         $parserOutput->setDisplayTitle($title);
     }
 
-    public static function onGetPreferences(User $user, array &$preferences) {
+    public static function onGetPreferences( User $user, array &$preferences ) {
         $preferences['rubyDisplayType'] = [
             'type' => 'select',
             'options' => array(
@@ -89,7 +92,7 @@ class HanjaConverterHooks {
         ];
     }
     
-    public static function onGetDefaultSortkey($title, &$sortkey) {
+    public static function onGetDefaultSortkey( $title, &$sortkey ) {
         $result = "";
         foreach(HanjaConverter::convertText(null, $title->getText(), true) as $item) {
             if(is_array($item)) $item = $item[1];
@@ -99,7 +102,7 @@ class HanjaConverterHooks {
         return;
     }
 
-    public static function addNoRubyToLinks($text) {
+    public static function addNoRubyToLinks( $text ) {
         $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
         $len = count($chars);
         $brackets = 0;

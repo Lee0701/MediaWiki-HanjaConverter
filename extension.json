@@ -21,6 +21,11 @@
             "styles": [
                 "ext.HanjaConverter.ruby.hide.css"
             ]
+        },
+        "ext.HanjaConverter.noruby": {
+            "scripts": [
+                "ext.HanjaConverter.noruby.js"
+            ]
         }
     },
     "ResourceFileModulePaths": {
