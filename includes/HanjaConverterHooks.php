@@ -5,6 +5,7 @@ use MediaWiki\Linker\LinkTarget;
 
 require_once('Ruby.php');
 require_once('HanjaGrades.php');
+require_once('SeonbiConverter.php');
 require_once('HanjaConverter.php');
 
 class HanjaConverterHooks {
@@ -24,6 +25,8 @@ class HanjaConverterHooks {
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
+        //TODO: Add seonbi option check
+        if(true) return;
         if(!end($parser->noruby)) {
             $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
         }
@@ -32,6 +35,8 @@ class HanjaConverterHooks {
     public static function onHtmlPageLinkRendererBegin(LinkRenderer $linkRenderer, LinkTarget $target, &$text, &$extraAttribs, &$query, &$ret) {
         if(!($target instanceof Title)) return true;
         if(!($text instanceof HtmlArmor)) return true;
+        //TODO: Add seonbi option check
+        if(true) return;
 
         $label = HtmlArmor::getHtml($text);
         $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
@@ -56,8 +61,16 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
-        $parserOutput->setDisplayTitle($title);
+        //TODO: Add seonbi option check
+        if(true) {
+            $title = SeonbiConverter::convertText($parserOutput->getDisplayTitle());
+            $parserOutput->setDisplayTitle($title);
+            $text = SeonbiConverter::convertText($parserOutput->getText());
+            $parserOutput->setText($text);
+        } else {
+            $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
+            $parserOutput->setDisplayTitle($title);
+        }
     }
 
     public static function onGetPreferences(User $user, array &$preferences) {
@@ -90,6 +103,9 @@ class HanjaConverterHooks {
     }
     
     public static function onGetDefaultSortkey($title, &$sortkey) {
+        //TODO: Add seonbi option check
+        if(true) return;
+        
         $result = "";
         foreach(HanjaConverter::convertText(null, $title->getText(), true) as $item) {
             if(is_array($item)) $item = $item[1];
