@@ -43,9 +43,10 @@ class HanjaConverterHooks {
         $outputPage->addModules('ext.HanjaConverter.noruby');
         if(!isset($_GET['noruby'])) {
             $user = $outputPage->getContext()->getUser();
-            $unknownLink = $user->getOption('displayRubyForUnknownLink');
-            $grade = $user->getOption('displayRubyForGrade');
-            $display = $user->getOption('rubyDisplayType');
+            $userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+            $unknownLink = $userOptionsLookup->getOption($user, 'displayRubyForUnknownLink');
+            $grade = $userOptionsLookup->getOption($user, 'displayRubyForGrade');
+            $display = $userOptionsLookup->getOption($user, 'rubyDisplayType');
             $style = "";
             if($unknownLink === '1') {
                 $style .= "ruby.hanja.unknown > rt { display: $display; } ruby.hanja.unknown > rp { display: revert; }\n";
@@ -82,7 +83,7 @@ class HanjaConverterHooks {
             'type' => 'select',
             'label-message' => 'tog-HanjaConverter-displayRubyForGrade',
             'options' => $options,
-            'default' => $user->getOption('displayRubyForGrade', 'grade80'),
+            'default' => MediaWikiServices::getInstance()->getUserOptionsLookup()->getOption($user, 'displayRubyForGrade', 'grade80'),
             'section' => 'rendering/HanjaConverter',
         ];
         $preferences['displayRubyForUnknownLink'] = [
