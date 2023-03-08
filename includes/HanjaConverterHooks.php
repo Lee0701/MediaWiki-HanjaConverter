@@ -7,6 +7,7 @@ use MediaWiki\Linker\LinkTarget;
 require_once('Ruby.php');
 require_once('HanjaGrades.php');
 require_once('HanjaConverter.php');
+require_once('ApiHanjaConverter.php');
 
 class HanjaConverterHooks {
     public static function onParserFirstCallInit( Parser $parser ) {
@@ -26,7 +27,8 @@ class HanjaConverterHooks {
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
         if(!end($parser->noruby)) {
-            $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+            // $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+            $text = ApiHanjaConverter::format(ApiHanjaConverter::convertText(10, $text, true));
         }
     }
 
@@ -35,7 +37,8 @@ class HanjaConverterHooks {
         if(!($text instanceof HtmlArmor)) return true;
 
         $label = HtmlArmor::getHtml($text);
-        $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
+        // $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
+        $result = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $label, true), !$target->isKnown());
         $text = new HtmlArmor($result);
     }
     
@@ -61,7 +64,8 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
+        // $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
+        $title = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
         $parserOutput->setDisplayTitle($title);
     }
 
@@ -95,8 +99,14 @@ class HanjaConverterHooks {
     }
     
     public static function onGetDefaultSortkey( $title, &$sortkey ) {
+        // $result = "";
+        // foreach(HanjaConverter::convertText(null, $title->getText(), true) as $item) {
+        //     if(is_array($item)) $item = $item[1];
+        //     $result .= $item;
+        // }
+        // $sortkey = $result;
         $result = "";
-        foreach(HanjaConverter::convertText(null, $title->getText(), true) as $item) {
+        foreach(ApiHanjaConverter::convertText(null, $title->getText(), true) as $item) {
             if(is_array($item)) $item = $item[1];
             $result .= $item;
         }
