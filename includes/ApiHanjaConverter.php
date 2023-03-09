@@ -3,6 +3,7 @@
 class ApiHanjaConverter {
     
     private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
+    private static $config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
 
     public static function convert($text) {
         $postdata = json_encode(
@@ -21,7 +22,8 @@ class ApiHanjaConverter {
         );
         $context = stream_context_create($opts);
         //TODO: Add host and port options
-        $result = file_get_contents('http://hanja-reading:3000', false, $context);
+        $apiUrl = self::$config->get('HanjaConverterConversionApiUrl');
+        $result = file_get_contents($apiUrl, false, $context);
         $json = json_decode($result, true);
         return $json['result'];
     }
@@ -60,7 +62,7 @@ class ApiHanjaConverter {
                 } else {
                     $chars = preg_split('//u', $key, -1, PREG_SPLIT_NO_EMPTY);
                     $grade = self::calculateGrade($chars);
-                    $result .= Ruby::format($key, $value, "grade$grade$unknown");
+                    $result .= Ruby::format($key, $value, "api grade$grade$unknown");
                 }
             } else {
                 $result .= $item;

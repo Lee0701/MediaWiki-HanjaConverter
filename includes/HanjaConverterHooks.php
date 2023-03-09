@@ -10,6 +10,9 @@ require_once('HanjaConverter.php');
 require_once('ApiHanjaConverter.php');
 
 class HanjaConverterHooks {
+
+    private static $config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
+
     public static function onParserFirstCallInit( Parser $parser ) {
         $parser->setHook('noruby', [self::class, 'noRubyTag']);
         // A stack to store levels of ruby/noruby
@@ -27,8 +30,12 @@ class HanjaConverterHooks {
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
         if(!end($parser->noruby)) {
-            // $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
-            $text = ApiHanjaConverter::format(ApiHanjaConverter::convertText(10, $text, true));
+            $engineType = self::$config->get('HanjaConverterConversionEngine');
+            if($engineType == 'internal') {
+                $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+            } else if($engineType == 'api') {
+                $text = ApiHanjaConverter::format(ApiHanjaConverter::convertText(10, $text, true));
+            }
         }
     }
 
@@ -37,9 +44,13 @@ class HanjaConverterHooks {
         if(!($text instanceof HtmlArmor)) return true;
 
         $label = HtmlArmor::getHtml($text);
-        // $result = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
-        $result = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $label, true), !$target->isKnown());
-        $text = new HtmlArmor($result);
+        $engineType = self::$config->get('HanjaConverterConversionEngine');
+        if($engineType == 'internal') {
+            $label = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
+        } else if($engineType == 'api') {
+            $label = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $label, true), !$target->isKnown());
+        }
+        $text = new HtmlArmor($label);
     }
     
     public static function onBeforePageDisplay( OutputPage $outputPage, Skin $skin ) {
@@ -64,8 +75,13 @@ class HanjaConverterHooks {
     }
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
-        // $title = HanjaConverter::format(HanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
-        $title = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $parserOutput->getDisplayTitle(), true));
+        $title = $parserOutput->getDisplayTitle()
+        $engineType = self::$config->get('HanjaConverterConversionEngine');
+        if($engineType == 'internal') {
+            $title = HanjaConverter::format(HanjaConverter::convertText(null, $title, true));
+        } else if($engineType == 'api') {
+            $title = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $title, true));
+        }
         $parserOutput->setDisplayTitle($title);
     }
 
@@ -99,14 +115,15 @@ class HanjaConverterHooks {
     }
     
     public static function onGetDefaultSortkey( $title, &$sortkey ) {
-        // $result = "";
-        // foreach(HanjaConverter::convertText(null, $title->getText(), true) as $item) {
-        //     if(is_array($item)) $item = $item[1];
-        //     $result .= $item;
-        // }
-        // $sortkey = $result;
         $result = "";
-        foreach(ApiHanjaConverter::convertText(null, $title->getText(), true) as $item) {
+        $engineType = self::$config->get('HanjaConverterConversionEngine');
+        $converted = array($title->getText());
+        if($engineType == 'internal') {
+            $converted = HanjaConverter::convertText(null, $title->getText(), true);
+        } else if($engineType == 'api') {
+            $converted = ApiHanjaConverter::convertText(null, $title->getText(), true)
+        }
+        foreach($converted as $item) {
             if(is_array($item)) $item = $item[1];
             $result .= $item;
         }

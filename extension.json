@@ -42,5 +42,18 @@
         "displayRubyForGrade": "grade80",
         "rubyDisplayType": "inline-block"
     },
+	"config": {
+		"HanjaConverterConversionEngine": {
+			"value": "internal",
+			"description": "Type of conversion engine to use"
+		},
+        "HanjaConverterConversionApiUrl": {
+            "value": "http://localhost:3000",
+            "description": "A url of the conversion API if api conversion is enabled"
+        }
+	},
+	"ConfigRegistry": {
+		"hanjaconverter": "GlobalVarConfig::newInstance"
+	},
     "manifest_version": 1
 }
