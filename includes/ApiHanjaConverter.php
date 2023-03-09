@@ -1,9 +1,10 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 class ApiHanjaConverter {
     
     private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
-    private static $config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
 
     public static function convert($text) {
         $postdata = json_encode(
@@ -21,8 +22,8 @@ class ApiHanjaConverter {
             )
         );
         $context = stream_context_create($opts);
-        //TODO: Add host and port options
-        $apiUrl = self::$config->get('HanjaConverterConversionApiUrl');
+
+        $apiUrl = self::getConfig()->get('HanjaConverterConversionApiUrl');
         $result = file_get_contents($apiUrl, false, $context);
         $json = json_decode($result, true);
         return $json['result'];
@@ -83,6 +84,10 @@ class ApiHanjaConverter {
         if(count($grades) > 0) $grade = min($grades);
         else $grade = 0;
         return $grade;
+    }
+
+    public static function getConfig() {
+        return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
     }
 
 }
