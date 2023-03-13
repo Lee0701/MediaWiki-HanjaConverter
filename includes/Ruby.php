@@ -1,4 +1,5 @@
 <?php
+namespace HanjaConverter;
 
 class Ruby {
     public static function format($hanja, $reading, $class) {

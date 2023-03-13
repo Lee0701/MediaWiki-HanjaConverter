@@ -1,6 +1,8 @@
 <?php
+namespace HanjaConverter;
 
-use MediaWiki\MediaWikiServices;
+use HanjaConverter\HanjaConverter;
+use HanjaConverter\UserDictionary;
 
 class ApiHanjaConverter extends HanjaConverter {
     

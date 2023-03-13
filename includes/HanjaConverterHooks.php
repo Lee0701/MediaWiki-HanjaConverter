@@ -1,14 +1,14 @@
 <?php
+namespace HanjaConverter;
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Linker\LinkTarget;
 
-require_once('Ruby.php');
-require_once('HanjaGrades.php');
-require_once('HanjaConverter.php');
-require_once('InternalHanjaConverter.php');
-require_once('ApiHanjaConverter.php');
+use HanjaConverter\HanjaConverter;
+use HanjaConverter\InternalHanjaConverter;
+use HanjaConverter\ApiHanjaConverter;
+use HanjaConverter\HanjaGrades;
 
 class HanjaConverterHooks {
 

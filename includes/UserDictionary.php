@@ -1,4 +1,5 @@
 <?php
+namespace HanjaConverter;
 
 use \MediaWiki\Revision\RevisionRecord;
 

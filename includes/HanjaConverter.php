@@ -1,4 +1,8 @@
 <?php
+namespace HanjaConverter;
+
+use HanjaConverter\Ruby;
+use HanjaConverter\HanjaGrades;
 
 abstract class HanjaConverter {
 

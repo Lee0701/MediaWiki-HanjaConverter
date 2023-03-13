@@ -1,4 +1,7 @@
 <?php
+namespace HanjaConverter;
+
+use HanjaConverter\HanjaConverter;
 
 require_once('HanjaGradesDictionary.php');
 
