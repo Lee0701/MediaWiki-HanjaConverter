@@ -76,7 +76,7 @@ class InternalHanjaConverter {
                     $last = array_pop($arr);
                     $last[0] .= $item[0];
                     $last[1] .= $item[1];
-                    if($item[2] < $last[2]) $last[2] = $item[2];
+                    // if($item[2] < $last[2]) $last[2] = $item[2];
                     array_push($arr, $last);
                 }
                 else array_push($arr, $item);
