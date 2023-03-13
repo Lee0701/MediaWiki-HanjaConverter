@@ -3,7 +3,7 @@
 require_once('InternalDictionary.php');
 require_once('UserDictionary.php');
 
-class HanjaConverter {
+class InternalHanjaConverter {
 
     private static $HALF_VOWELS_FOR_INITIAL_SOUND_LAW = 'ᅣᅤᅧᅨᅭᅲᅵ';
     private static $HANJA_RANGE = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
