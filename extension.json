@@ -49,11 +49,11 @@
 		},
         "HanjaConverterConversionApiUrl": {
             "value": "http://localhost:3000",
-            "description": "A url of the conversion API if api conversion is enabled"
+            "description": "A Url of the conversion API if api conversion is enabled"
         }
 	},
 	"ConfigRegistry": {
 		"hanjaconverter": "GlobalVarConfig::newInstance"
 	},
-    "manifest_version": 1
+    "manifest_version": 2
 }
