@@ -2,20 +2,16 @@
 
 use MediaWiki\MediaWikiServices;
 
-require_once('UserDictionary.php');
-
 class ApiHanjaConverter {
     
     private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
 
     public static function convert($text) {
-        $userDictionay = UserDictionary::get();
         $postdata = json_encode(
             array(
                 'text' => $text,
                 'group' => true,
                 'stringify' => false,
-                'userdictionary' => $userDictionay
             )
         );
         $opts = array('http' =>
@@ -66,8 +62,8 @@ class ApiHanjaConverter {
                     $result .= $key;
                 } else {
                     $chars = preg_split('//u', $key, -1, PREG_SPLIT_NO_EMPTY);
-                    $grade = self::calculateGrade($chars);
-                    $result .= Ruby::format($key, $value, "grade$grade$unknown");
+                    $grade = HanjaGrades::calculateGrade($chars);
+                    $result .= Ruby::format($key, $value, "api grade$grade$unknown");
                 }
             } else {
                 $result .= $item;

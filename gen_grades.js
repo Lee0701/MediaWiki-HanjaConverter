@@ -12,7 +12,7 @@ rl.on('close', () => {
     const result = chunked.map((chunk) => chunk.join(',')).join(',\n')
     console.log([
         '<?php',
-        'class GradesDictionary {',
+        'class HanjaGradesDictionary {',
         'public static $dictionary = array(',
         result,
         ');',
