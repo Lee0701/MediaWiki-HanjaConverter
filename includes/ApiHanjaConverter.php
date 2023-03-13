@@ -51,3 +51,5 @@ class ApiHanjaConverter extends HanjaConverter {
     }
 
 }
+
+?>

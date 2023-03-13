@@ -2,8 +2,7 @@
 namespace HanjaConverter;
 
 use HanjaConverter\HanjaConverter;
-
-require_once('HanjaGradesDictionary.php');
+use HanjaConverter\HanjaGradesDictionary;
 
 class HanjaGrades {
 

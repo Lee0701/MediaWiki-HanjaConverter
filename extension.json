@@ -7,6 +7,9 @@
     "AutoloadClasses": {
         "HanjaConverterHooks": "includes/HanjaConverterHooks.php"
     },
+    "AutoloadNamespaces": {
+        "HanjaConverter\\": "includes/"
+    },
     "Hooks": {
         "ParserFirstCallInit": "HanjaConverterHooks::onParserFirstCallInit",
         "InternalParseBeforeLinks": "HanjaConverterHooks::onInternalParseBeforeLinks",

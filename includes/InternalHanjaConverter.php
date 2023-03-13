@@ -3,8 +3,7 @@ namespace HanjaConverter;
 
 use HanjaConverter\HanjaConverter;
 use HanjaConverter\UserDictionary;
-
-require_once('InternalDictionary.php');
+use HanjaConverter\InternalDictionary;
 
 class InternalHanjaConverter extends HanjaConverter {
 

@@ -1,4 +1,6 @@
 <?php
+namespace HanjaConverter;
+
 # 漢字變換用 追加辭典
 # 한중일 통합 한자 유니코드 대표음 목록
 #
