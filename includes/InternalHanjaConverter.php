@@ -1,6 +1,6 @@
 <?php
 
-require_once('Dictionary.php');
+require_once('InternalDictionary.php');
 require_once('UserDictionary.php');
 
 class HanjaConverter {
