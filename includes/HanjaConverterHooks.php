@@ -12,7 +12,6 @@ require_once('ApiHanjaConverter.php');
 
 class HanjaConverterHooks {
 
-    private static $config = null;
     private static $hanjaConverter = null;
 
     public static function onParserFirstCallInit( Parser $parser ) {
@@ -20,7 +19,7 @@ class HanjaConverterHooks {
         // A stack to store levels of ruby/noruby
         $parser->noruby = array();
 
-        self::$config = self::getConfig();
+        $config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
         $engineType = $config->get('HanjaConverterConversionEngine');
         if($engineType == 'internal') self::$hanjaConverter = new InternalHanjaConverter($config);
         else if($engineType == 'api') self::$hanjaConverter = new ApiHanjaConverter($config);
@@ -152,10 +151,6 @@ class HanjaConverterHooks {
             $result .= $c;
         }
         return $result;
-    }
-
-    public static function getConfig() {
-        return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
     }
 
 }
