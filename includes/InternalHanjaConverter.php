@@ -160,23 +160,6 @@ class HanjaConverter {
         return $arr;
     }
 
-    public static function format($arr, $unknown=false) {
-        if($unknown) $unknown = ' unknown';
-        else $unknown = '';
-        $result = '';
-        foreach($arr as $item) {
-            if(is_array($item)) {
-                $key = $item[0];
-                $value = $item[1];
-                $grade = $item[2];
-                $result .= Ruby::format($key, $value, "grade$grade$unknown");
-            } else {
-                $result .= $item;
-            }
-        }
-        return $result;
-    }
-
 }
 
 ?>
