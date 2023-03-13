@@ -6,7 +6,7 @@ namespace HanjaConverter;
 #
 # 유니코드 정규화 알고리즘 적용된, 한자어 목록
 #
-class Dictionary {
+class InternalDictionary {
 public static $dictionary = array(
 "〇"=>"영",
 "一"=>"일",

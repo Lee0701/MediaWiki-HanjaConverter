@@ -1,7 +1,10 @@
 <?php
 namespace HanjaConverter;
 
-use \MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Revision\RevisionRecord;
+use \ContentHandler;
+use \WikiPage;
+use \Title;
 
 class UserDictionary {
     public static $USER_DICTIONARY_PAGE_NAME = 'HanjaConverter-UserDictionary';

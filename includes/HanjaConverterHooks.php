@@ -8,6 +8,7 @@ use MediaWiki\Linker\LinkTarget;
 use HanjaConverter\HanjaConverter;
 use HanjaConverter\InternalHanjaConverter;
 use HanjaConverter\ApiHanjaConverter;
+use HanjaConverter\HanjaGrades;
 
 class HanjaConverterHooks {
 

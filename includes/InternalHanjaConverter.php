@@ -4,6 +4,7 @@ namespace HanjaConverter;
 use HanjaConverter\HanjaConverter;
 use HanjaConverter\UserDictionary;
 use HanjaConverter\InternalDictionary;
+use \Normalizer;
 
 class InternalHanjaConverter extends HanjaConverter {
 
@@ -24,8 +25,8 @@ class InternalHanjaConverter extends HanjaConverter {
                 $value = null;
                 if(isset($userDictionary[$key])) {
                     $value = $userDictionary[$key];
-                } else if(isset(Dictionary::$dictionary[$key])) {
-                    $value = Dictionary::$dictionary[$key];
+                } else if(isset(InternalDictionary::$dictionary[$key])) {
+                    $value = InternalDictionary::$dictionary[$key];
                     if($initial) {
                         $sounds = preg_split('//u', Normalizer::normalize($value, Normalizer::FORM_D), -1, PREG_SPLIT_NO_EMPTY);
                         if($sounds[0] == 'ᄅ') $sounds[0] = 'ᄂ';
