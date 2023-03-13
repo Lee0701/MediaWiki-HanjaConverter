@@ -20,10 +20,10 @@ class HanjaConverterHooks {
         // A stack to store levels of ruby/noruby
         $parser->noruby = array();
 
-        $this->$config = self::getConfig();
+        self::$config = self::getConfig();
         $engineType = $config->get('HanjaConverterConversionEngine');
-        if($engineType == 'internal') $hanjaConverter = new InternalHanjaConverter($config);
-        else if($engineType == 'api') $hanjaConverter = new ApiHanjaConverter($config);
+        if($engineType == 'internal') self::$hanjaConverter = new InternalHanjaConverter($config);
+        else if($engineType == 'api') self::$hanjaConverter = new ApiHanjaConverter($config);
     }
 
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -37,7 +37,7 @@ class HanjaConverterHooks {
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
         if(!end($parser->noruby)) {
-            $text = $hanjaConverter->format($hanjaConverter->convertText(10, $text, true));
+            $text = self::$hanjaConverter->format(self::$hanjaConverter->convertText(10, $text, true));
         }
     }
 
@@ -46,7 +46,7 @@ class HanjaConverterHooks {
         if(!($text instanceof HtmlArmor)) return true;
 
         $label = HtmlArmor::getHtml($text);
-        $label = $hanjaConverter->format($hanjaConverter->convertText(null, $label, true), !$target->isKnown());
+        $label = self::$hanjaConverter->format(self::$hanjaConverter->convertText(null, $label, true), !$target->isKnown());
         $text = new HtmlArmor($label);
     }
     
@@ -73,7 +73,7 @@ class HanjaConverterHooks {
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
         $title = $parserOutput->getDisplayTitle();
-        $title = $hanjaConverter->format($hanjaConverter->convertText(null, $title, true));
+        $title = self::$hanjaConverter->format(self::$hanjaConverter->convertText(null, $title, true));
         $parserOutput->setDisplayTitle($title);
     }
 
@@ -109,7 +109,7 @@ class HanjaConverterHooks {
     public static function onGetDefaultSortkey( $title, &$sortkey ) {
         $result = "";
         $converted = array($title->getText());
-        $converted = $hanjaConverter->convertText(null, $title->getText(), true);
+        $converted = self::$hanjaConverter->convertText(null, $title->getText(), true);
         foreach($converted as $item) {
             if(is_array($item)) $item = $item[1];
             $result .= $item;
