@@ -63,7 +63,7 @@ class ApiHanjaConverter {
                 } else {
                     $chars = preg_split('//u', $key, -1, PREG_SPLIT_NO_EMPTY);
                     $grade = self::calculateGrade($chars);
-                    $result .= Ruby::format($key, $value, "api grade$grade$unknown");
+                    $result .= Ruby::format($key, $value, "grade$grade$unknown");
                 }
             } else {
                 $result .= $item;
