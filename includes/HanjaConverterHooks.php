@@ -12,10 +12,18 @@ require_once('ApiHanjaConverter.php');
 
 class HanjaConverterHooks {
 
+    private static $config = null;
+    private static $hanjaConverter = null;
+
     public static function onParserFirstCallInit( Parser $parser ) {
         $parser->setHook('noruby', [self::class, 'noRubyTag']);
         // A stack to store levels of ruby/noruby
         $parser->noruby = array();
+
+        $this->$config = self::getConfig();
+        $engineType = $config->get('HanjaConverterConversionEngine');
+        if($engineType == 'internal') $hanjaConverter = new InternalHanjaConverter($config);
+        else if($engineType == 'api') $hanjaConverter = new ApiHanjaConverter($config);
     }
 
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -29,12 +37,7 @@ class HanjaConverterHooks {
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
         if(!end($parser->noruby)) {
-            $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
-            if($engineType == 'internal') {
-                $text = HanjaConverter::format(InternalHanjaConverter::convertText(10, $text, true));
-            } else if($engineType == 'api') {
-                $text = HanjaConverter::format(ApiHanjaConverter::convertText(10, $text, true));
-            }
+            $text = $hanjaConverter->format($hanjaConverter->convertText(10, $text, true));
         }
     }
 
@@ -43,12 +46,7 @@ class HanjaConverterHooks {
         if(!($text instanceof HtmlArmor)) return true;
 
         $label = HtmlArmor::getHtml($text);
-        $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
-        if($engineType == 'internal') {
-            $label = HanjaConverter::format(InternalHanjaConverter::convertText(null, $label, true), !$target->isKnown());
-        } else if($engineType == 'api') {
-            $label = HanjaConverter::format(ApiHanjaConverter::convertText(null, $label, true), !$target->isKnown());
-        }
+        $label = $hanjaConverter->format($hanjaConverter->convertText(null, $label, true), !$target->isKnown());
         $text = new HtmlArmor($label);
     }
     
@@ -75,12 +73,7 @@ class HanjaConverterHooks {
 
     public static function onOutputPageParserOutput( OutputPage $out, ParserOutput $parserOutput ) {
         $title = $parserOutput->getDisplayTitle();
-        $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
-        if($engineType == 'internal') {
-            $title = HanjaConverter::format(InternalHanjaConverter::convertText(null, $title, true));
-        } else if($engineType == 'api') {
-            $title = HanjaConverter::format(ApiHanjaConverter::convertText(null, $title, true));
-        }
+        $title = $hanjaConverter->format($hanjaConverter->convertText(null, $title, true));
         $parserOutput->setDisplayTitle($title);
     }
 
@@ -115,13 +108,8 @@ class HanjaConverterHooks {
     
     public static function onGetDefaultSortkey( $title, &$sortkey ) {
         $result = "";
-        $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
         $converted = array($title->getText());
-        if($engineType == 'internal') {
-            $converted = InternalHanjaConverter::convertText(null, $title->getText(), true);
-        } else if($engineType == 'api') {
-            $converted = ApiHanjaConverter::convertText(null, $title->getText(), true);
-        }
+        $converted = $hanjaConverter->convertText(null, $title->getText(), true);
         foreach($converted as $item) {
             if(is_array($item)) $item = $item[1];
             $result .= $item;

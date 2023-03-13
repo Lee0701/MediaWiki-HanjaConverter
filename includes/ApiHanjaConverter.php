@@ -2,9 +2,9 @@
 
 use MediaWiki\MediaWikiServices;
 
-class ApiHanjaConverter {
+class ApiHanjaConverter extends HanjaConverter {
     
-    public static function convert($text) {
+    private function convert($text) {
         $postdata = json_encode(
             array(
                 'text' => $text,
@@ -21,13 +21,13 @@ class ApiHanjaConverter {
         );
         $context = stream_context_create($opts);
 
-        $apiUrl = self::getConfig()->get('HanjaConverterConversionApiUrl');
+        $apiUrl = $this->config->get('HanjaConverterConversionApiUrl');
         $result = file_get_contents($apiUrl, false, $context);
         $json = json_decode($result, true);
         return $json['result'];
     }
 
-    public static function excludeBrackets($arr) {
+    private function excludeBrackets($arr) {
         $result = array();
         $brackets = 0;
         foreach($arr as $a) {
@@ -44,34 +44,8 @@ class ApiHanjaConverter {
         return $result;
     }
 
-    public static function convertText($every_n, $text, $initial=true) {
-        return self::excludeBrackets(self::convert($text));
-    }
-
-    public static function format($arr, $unknown=false) {
-        if($unknown) $unknown = ' unknown';
-        else $unknown = '';
-        $result = '';
-        foreach($arr as $item) {
-            if(is_array($item)) {
-                $key = $item[0];
-                $value = $item[1];
-                if($key == $value) {
-                    $result .= $key;
-                } else {
-                    $chars = preg_split('//u', $key, -1, PREG_SPLIT_NO_EMPTY);
-                    $grade = HanjaGrades::calculateGrade($chars);
-                    $result .= Ruby::format($key, $value, "api grade$grade$unknown");
-                }
-            } else {
-                $result .= $item;
-            }
-        }
-        return $result;
-    }
-
-    public static function getConfig() {
-        return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
+    public function convertText($every_n, $text, $initial=true) {
+        return $this->excludeBrackets($this->convert($text));
     }
 
 }

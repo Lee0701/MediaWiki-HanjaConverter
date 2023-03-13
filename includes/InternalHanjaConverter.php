@@ -3,9 +3,9 @@
 require_once('InternalDictionary.php');
 require_once('UserDictionary.php');
 
-class InternalHanjaConverter {
+class InternalHanjaConverter extends HanjaConverter {
 
-    public static function convert($hanja, $initial=false) {
+    private function convert($hanja, $initial=false) {
         $hanjaRange = HanjaConverter::$HANJA_RANGE;
         $hangulRange = HanjaConverter::$HANGUL_RANGE;
         $userDictionary = UserDictionary::get();
@@ -68,9 +68,9 @@ class InternalHanjaConverter {
         return $result;
     }
 
-    public static function convertWord($word, $initial=false) {
+    private function convertWord($word, $initial=false) {
         $arr = array('');
-        foreach(self::convert($word, $initial) as $item) {
+        foreach($this->convert($word, $initial) as $item) {
             if(is_array($item)) {
                 if(is_array($arr[array_key_last($arr)])) {
                     $last = array_pop($arr);
@@ -88,14 +88,14 @@ class InternalHanjaConverter {
         return $arr;
     }
     
-    public static function convertEvery($n, $word, $initial=false) {
+    private function convertEvery($n, $word, $initial=false) {
         $chars = preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY);
         $arr = array('');
         while(count($chars) > 0) {
             $chunk = null;
             if($n == null) $chunk = array_splice($chars, 0);
             else $chunk = array_splice($chars, 0, $n);
-            $converted = self::convertWord(implode('', $chunk), $initial);
+            $converted = $this->convertWord(implode('', $chunk), $initial);
             $initial = false;
             $last = array_pop($arr);
             $continuing = array_shift($converted);
@@ -113,7 +113,7 @@ class InternalHanjaConverter {
         return $arr;
     }
 
-    public static function convertText($every_n, $text, $initial=true) {
+    public function convertText($every_n, $text, $initial=true) {
         $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
         $arr = array();
         $len = count($chars);
@@ -135,7 +135,7 @@ class InternalHanjaConverter {
                     if($word == '') {
                         array_push($arr, $c);
                     } else {
-                        $arr = array_merge($arr, self::convertEvery($every_n, $word, $initial));
+                        $arr = array_merge($arr, $this->convertEvery($every_n, $word, $initial));
                         $word = '';
                         array_push($arr, $c);
                     }
@@ -147,12 +147,12 @@ class InternalHanjaConverter {
                 continue;
             }
             if($word != '') {
-                $arr = array_merge($arr, self::convertEvery($every_n, $word, $initial));
+                $arr = array_merge($arr, $this->convertEvery($every_n, $word, $initial));
                 $word = '';
             }
             array_push($arr, $c);
         }
-        $arr = array_merge($arr, self::convertEvery($every_n, $word, $initial));
+        $arr = array_merge($arr, $this->convertEvery($every_n, $word, $initial));
         return $arr;
     }
 
