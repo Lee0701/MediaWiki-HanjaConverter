@@ -4,6 +4,9 @@
     "description": "Converts hanja words to hangul",
     "version": "0.0.1",
     "type": "hooks",
+    "AutoloadClasses": {
+        "HanjaConverterHooks": "includes/HanjaConverterHooks.php"
+    },
     "AutoloadNamespaces": {
         "HanjaConverter\\": "includes/"
     },

@@ -1,5 +1,4 @@
 <?php
-namespace HanjaConverter;
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Linker\LinkRenderer;
