@@ -1,8 +1,8 @@
 <?php
 
-interface HanjaConverter {
-    function convertText($every_n, $text, $initial=true);
-    function format($arr, $unknown=false);
+abstract class HanjaConverter {
+    public abstract function convertText($every_n, $text, $initial=true);
+    public abstract function format($arr, $unknown=false);
 
     public static function format($arr, $unknown=false) {
         if($unknown) $unknown = ' unknown';
