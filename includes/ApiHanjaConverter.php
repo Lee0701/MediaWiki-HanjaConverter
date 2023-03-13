@@ -4,8 +4,6 @@ use MediaWiki\MediaWikiServices;
 
 class ApiHanjaConverter {
     
-    private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
-
     public static function convert($text) {
         $postdata = json_encode(
             array(

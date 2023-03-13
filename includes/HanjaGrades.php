@@ -13,7 +13,7 @@ class HanjaGrades {
         return 0;
     }
 
-    private static function calculateGrade($chars, $offset=0, $len=-1) {
+    public static function calculateGrade($chars, $offset=0, $len=-1) {
         $hangulRange = self::$HANGUL_RANGE;
         if($len == -1) $len = count($chars);
         $grades = array();
