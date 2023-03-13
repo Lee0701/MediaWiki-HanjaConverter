@@ -43,7 +43,7 @@ class HanjaConverter {
                     for($k = 0 ; $k < $j ; $k++) {
                         if($value_chars[$k] == $chars[$i + $k]) {
                             if($different != '') {
-                                array_push($result, array(implode('', array_slice($chars, $i, $k)), $different, self::calculateGrade($chars, $i, $j)));
+                                array_push($result, array(implode('', array_slice($chars, $i, $k)), $different));
                             }
                             array_push($result, $value_chars[$k]);
                             $different = '';
@@ -53,7 +53,7 @@ class HanjaConverter {
                     }
                     
                     if($different != '') {
-                        array_push($result, array(implode('', array_slice($chars, $i, $k)), $different, self::calculateGrade($chars, $i, $j)));
+                        array_push($result, array(implode('', array_slice($chars, $i, $k)), $different));
                     }
                     
                     $i += $j;
@@ -72,20 +72,6 @@ class HanjaConverter {
         return $result;
     }
 
-    private static function calculateGrade($chars, $offset=0, $len=-1) {
-        $hangulRange = self::$HANGUL_RANGE;
-        if($len == -1) $len = count($chars);
-        $grades = array();
-        for($k = 0 ; $k < $len ; $k++) {
-            $c = $chars[$offset + $k];
-            if(preg_match("/$hangulRange/u", $c) !== 0) continue;
-            array_push($grades, HanjaGrades::gradeOf($c));
-        }
-        if(count($grades) > 0) $grade = min($grades);
-        else $grade = 0;
-        return $grade;
-    }
-    
     public static function convertWord($word, $initial=false) {
         $arr = array('');
         foreach(self::convert($word, $initial) as $item) {

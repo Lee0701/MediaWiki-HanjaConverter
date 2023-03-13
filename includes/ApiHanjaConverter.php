@@ -72,20 +72,6 @@ class ApiHanjaConverter {
         return $result;
     }
 
-    private static function calculateGrade($chars, $offset=0, $len=-1) {
-        $hangulRange = self::$HANGUL_RANGE;
-        if($len == -1) $len = count($chars);
-        $grades = array();
-        for($k = 0 ; $k < $len ; $k++) {
-            $c = $chars[$offset + $k];
-            if(preg_match("/$hangulRange/u", $c) !== 0) continue;
-            array_push($grades, HanjaGrades::gradeOf($c));
-        }
-        if(count($grades) > 0) $grade = min($grades);
-        else $grade = 0;
-        return $grade;
-    }
-
     public static function getConfig() {
         return MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'hanjaconverter' );
     }

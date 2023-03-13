@@ -6,6 +6,7 @@ use MediaWiki\Linker\LinkTarget;
 
 require_once('Ruby.php');
 require_once('HanjaGrades.php');
+require_once('HanjaConverter.php');
 require_once('InternalHanjaConverter.php');
 require_once('ApiHanjaConverter.php');
 
@@ -30,9 +31,9 @@ class HanjaConverterHooks {
         if(!end($parser->noruby)) {
             $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
             if($engineType == 'internal') {
-                $text = HanjaConverter::format(HanjaConverter::convertText(10, $text, true));
+                $text = HanjaConverter::format(InternalHanjaConverter::convertText(10, $text, true));
             } else if($engineType == 'api') {
-                $text = ApiHanjaConverter::format(ApiHanjaConverter::convertText(10, $text, true));
+                $text = HanjaConverter::format(ApiHanjaConverter::convertText(10, $text, true));
             }
         }
     }
@@ -44,9 +45,9 @@ class HanjaConverterHooks {
         $label = HtmlArmor::getHtml($text);
         $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
         if($engineType == 'internal') {
-            $label = HanjaConverter::format(HanjaConverter::convertText(null, $label, true), !$target->isKnown());
+            $label = HanjaConverter::format(InternalHanjaConverter::convertText(null, $label, true), !$target->isKnown());
         } else if($engineType == 'api') {
-            $label = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $label, true), !$target->isKnown());
+            $label = HanjaConverter::format(ApiHanjaConverter::convertText(null, $label, true), !$target->isKnown());
         }
         $text = new HtmlArmor($label);
     }
@@ -76,9 +77,9 @@ class HanjaConverterHooks {
         $title = $parserOutput->getDisplayTitle();
         $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
         if($engineType == 'internal') {
-            $title = HanjaConverter::format(HanjaConverter::convertText(null, $title, true));
+            $title = HanjaConverter::format(InternalHanjaConverter::convertText(null, $title, true));
         } else if($engineType == 'api') {
-            $title = ApiHanjaConverter::format(ApiHanjaConverter::convertText(null, $title, true));
+            $title = HanjaConverter::format(ApiHanjaConverter::convertText(null, $title, true));
         }
         $parserOutput->setDisplayTitle($title);
     }
@@ -117,7 +118,7 @@ class HanjaConverterHooks {
         $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
         $converted = array($title->getText());
         if($engineType == 'internal') {
-            $converted = HanjaConverter::convertText(null, $title->getText(), true);
+            $converted = InternalHanjaConverter::convertText(null, $title->getText(), true);
         } else if($engineType == 'api') {
             $converted = ApiHanjaConverter::convertText(null, $title->getText(), true);
         }
