@@ -2,16 +2,20 @@
 
 use MediaWiki\MediaWikiServices;
 
+require_once('UserDictionary.php');
+
 class ApiHanjaConverter {
     
     private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
 
     public static function convert($text) {
+        $userDictionay = UserDictionary::get();
         $postdata = json_encode(
             array(
                 'text' => $text,
                 'group' => true,
                 'stringify' => false,
+                'userdictionary' => $userDictionay
             )
         );
         $opts = array('http' =>
