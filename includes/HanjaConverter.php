@@ -1,6 +1,11 @@
 <?php
 
 abstract class HanjaConverter {
+
+    public static $HALF_VOWELS_FOR_INITIAL_SOUND_LAW = 'ᅣᅤᅧᅨᅭᅲᅵ';
+    public static $HANJA_RANGE = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
+    public static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
+    
     public abstract function convertText($every_n, $text, $initial=true);
 
     public static function format($arr, $unknown=false) {

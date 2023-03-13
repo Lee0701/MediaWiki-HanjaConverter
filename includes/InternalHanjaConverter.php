@@ -5,13 +5,9 @@ require_once('UserDictionary.php');
 
 class InternalHanjaConverter {
 
-    private static $HALF_VOWELS_FOR_INITIAL_SOUND_LAW = 'ᅣᅤᅧᅨᅭᅲᅵ';
-    private static $HANJA_RANGE = '\x{4E00}-\x{62FF}\x{6300}-\x{77FF}\x{7800}-\x{8CFF}\x{8D00}-\x{9FFF}\x{3400}-\x{4DBF}';
-    private static $HANGUL_RANGE = '가-힣ㄱ-ㅎㅏ-ㅣ';
-
     public static function convert($hanja, $initial=false) {
-        $hanjaRange = self::$HANJA_RANGE;
-        $hangulRange = self::$HANGUL_RANGE;
+        $hanjaRange = HanjaConverter::$HANJA_RANGE;
+        $hangulRange = HanjaConverter::$HANGUL_RANGE;
         $userDictionary = UserDictionary::get();
 
         $chars = preg_split('//u', $hanja, -1, PREG_SPLIT_NO_EMPTY);
@@ -31,7 +27,7 @@ class InternalHanjaConverter {
                     if($initial) {
                         $sounds = preg_split('//u', Normalizer::normalize($value, Normalizer::FORM_D), -1, PREG_SPLIT_NO_EMPTY);
                         if($sounds[0] == 'ᄅ') $sounds[0] = 'ᄂ';
-                        if($sounds[0] == 'ᄂ' && strpos(self::$HALF_VOWELS_FOR_INITIAL_SOUND_LAW, $sounds[1]) !== false) $sounds[0] = 'ᄋ';
+                        if($sounds[0] == 'ᄂ' && strpos(HanjaConverter::$HALF_VOWELS_FOR_INITIAL_SOUND_LAW, $sounds[1]) !== false) $sounds[0] = 'ᄋ';
                         $composed = $value = Normalizer::normalize(implode('', $sounds), Normalizer::FORM_C);
                         if($value != $composed) $value = $composed;
                     }
