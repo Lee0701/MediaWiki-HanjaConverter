@@ -16,9 +16,9 @@ class UserDictionary {
     }
 
     public static function readUserDictionary() {
-        $content = ContentHandler::getContentText(WikiPage::factory(
+        $content = ( new Article(
             Title::newFromText(self::$USER_DICTIONARY_PAGE_NAME, NS_MEDIAWIKI)
-        )->getContent(RevisionRecord::RAW));
+        ) )->getPage()->getContent(RevisionRecord::RAW)->getNativeData();
         return $content;
     }
 
