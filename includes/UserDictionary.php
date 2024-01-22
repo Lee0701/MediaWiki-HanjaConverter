@@ -1,6 +1,7 @@
 <?php
 
 use \MediaWiki\Revision\RevisionRecord;
+use \MediaWiki\MediaWikiServices;
 
 class UserDictionary {
     public static $USER_DICTIONARY_PAGE_NAME = 'HanjaConverter-UserDictionary';
@@ -16,9 +17,9 @@ class UserDictionary {
     }
 
     public static function readUserDictionary() {
-        $content = ContentHandler::getContentText(WikiPage::factory(
-            Title::newFromText(self::$USER_DICTIONARY_PAGE_NAME, NS_MEDIAWIKI)
-        )->getContent(RevisionRecord::RAW));
+        $title = Title::newFromText(self::$USER_DICTIONARY_PAGE_NAME, NS_MEDIAWIKI);
+        $wikipage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
+        $content = ContentHandler::getContentText($wikipage->getContent(RevisionRecord::RAW));
         return $content;
     }
 

@@ -2,17 +2,22 @@
 
 use MediaWiki\MediaWikiServices;
 
+require_once('UserDictionary.php');
+
 class ApiHanjaConverter {
     
     public static function convert($text) {
         $apiUrl = self::getConfig()->get('HanjaConverterConversionApiUrl');
         $merge = self::getConfig()->get('HanjaConverterMerge');
 
+        $userdictionary = UserDictionary::get();
+
         $postdata = json_encode(
             array(
                 'text' => $text,
                 'merge' => $merge,
                 'stringify' => false,
+                'userdictionary' => $userdictionary,
             )
         );
         $opts = array('http' =>
