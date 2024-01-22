@@ -50,6 +50,10 @@
         "HanjaConverterConversionApiUrl": {
             "value": "http://localhost:3000",
             "description": "A Url of the conversion API if api conversion is enabled"
+        },
+        "HanjaConverterMerge": {
+            "value": false,
+            "description": "Merge chunks of Hanja words into single ruby tags"
         }
 	},
 	"ConfigRegistry": {

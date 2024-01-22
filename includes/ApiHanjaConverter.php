@@ -5,10 +5,13 @@ use MediaWiki\MediaWikiServices;
 class ApiHanjaConverter {
     
     public static function convert($text) {
+        $apiUrl = self::getConfig()->get('HanjaConverterConversionApiUrl');
+        $merge = self::getConfig()->get('HanjaConverterMerge');
+
         $postdata = json_encode(
             array(
                 'text' => $text,
-                'group' => true,
+                'merge' => $merge,
                 'stringify' => false,
             )
         );
@@ -21,7 +24,6 @@ class ApiHanjaConverter {
         );
         $context = stream_context_create($opts);
 
-        $apiUrl = self::getConfig()->get('HanjaConverterConversionApiUrl');
         $result = file_get_contents($apiUrl, false, $context);
         $json = json_decode($result, true);
         return $json['result'];
