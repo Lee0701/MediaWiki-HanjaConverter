@@ -12,23 +12,25 @@ require_once('ApiHanjaConverter.php');
 
 class HanjaConverterHooks {
 
+    // A stack to store levels of ruby/noruby
+    private static $noruby;
+
     public static function onParserFirstCallInit( Parser $parser ) {
         $parser->setHook('noruby', [self::class, 'noRubyTag']);
-        // A stack to store levels of ruby/noruby
-        $parser->noruby = array();
+        HanjaConverterHooks::$noruby = array();
     }
 
     public static function noRubyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
         $input = self::addNoRubyToLinks($input);
-        array_push($parser->noruby, true);
+        array_push(HanjaConverterHooks::$noruby, true);
         $output = $parser->recursiveTagParse( $input, $frame );
-        array_pop($parser->noruby);
+        array_pop(HanjaConverterHooks::$noruby);
         return $output;
     }
 
     public static function onInternalParseBeforeLinks( Parser &$parser, &$text ) {
         if($parser->getTitle()->getNamespace() < 0) return;
-        if(!end($parser->noruby)) {
+        if(!end(HanjaConverterHooks::$noruby)) {
             $engineType = self::getConfig()->get('HanjaConverterConversionEngine');
             if($engineType == 'internal') {
                 $text = HanjaConverter::format(InternalHanjaConverter::convertText(10, $text, true));

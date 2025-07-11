@@ -19,7 +19,7 @@ class UserDictionary {
     public static function readUserDictionary() {
         $title = Title::newFromText(self::$USER_DICTIONARY_PAGE_NAME, NS_MEDIAWIKI);
         $wikipage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
-        $content = ContentHandler::getContentText($wikipage->getContent(RevisionRecord::RAW));
+        $content = $wikipage->getContent(RevisionRecord::RAW)->getText();
         return $content;
     }
 
