@@ -1,5 +1,6 @@
 <?php
 
+use \MediaWiki\Title\Title;
 use \MediaWiki\Revision\RevisionRecord;
 use \MediaWiki\MediaWikiServices;
 
