@@ -20,13 +20,14 @@ class UserDictionary {
     public static function readUserDictionary() {
         $title = Title::newFromText(self::$USER_DICTIONARY_PAGE_NAME, NS_MEDIAWIKI);
         $wikipage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
-        $content = $wikipage->getContent(RevisionRecord::RAW)->getText();
-        return $content;
+        $content = $wikipage->getContent(RevisionRecord::RAW);
+        if($content == null) return "";
+        return $content->getText();
     }
 
     public static function parseUserDictionary($content) {
         $lines = explode("\n", $content);
-        $dictionary = array();
+        $dictionary = array(null => null);
         foreach($lines as $line) {
             if(strpos($line, '#') === 0) continue;
             $item = explode("=>", $line);
