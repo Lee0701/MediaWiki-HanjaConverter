@@ -3,6 +3,8 @@
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\Linker\LinkTarget;
+use MediaWiki\Title\Title;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 require_once('Ruby.php');
 require_once('HanjaGrades.php');
